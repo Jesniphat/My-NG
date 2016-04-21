@@ -1,0 +1,45 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>การเงิน</li><li>รายการแจ้งหนี้</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<table class="table-list">
+<thead>
+<tr>
+    <td colspan="8">
+        <a ui-sref="home.invoice_edit({uuid:''})" class="icon invoice-new">&nbsp;</a>
+        <a ui-sref="home.re_issue()" class="icon re_issue">&nbsp;</a>
+        <form-input type="text" model="keyword" hint="ค้นหา" pattern=".*" icon="search"></form-input>
+		<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1" class="icon prev">&nbsp;</button>
+{{currentPage+1}} / {{numberOfPages()}}
+		<button ng-disabled="currentPage >= filtered.length/pageSize - 1" ng-click="currentPage=currentPage+1" class="icon next">&nbsp;</button>
+    </td>
+</tr>
+<tr>
+	<th>ที่</th>
+	<th>รหัสใบแจ้งหนี้</th>
+	<th>รหัสสมาชิก</th>
+	<th>ชื่อสมาชิก</th>
+	<th>วันที่ ออกใบแจ้ง</th>
+	<th>จำนวนเงินทั้งหมด</th>
+	<th>สถานะ</th>
+	<th>คำสั่ง</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="invoice in filtered = (invoices | filter:keyword) | startFrom:currentPage*pageSize | limitTo:pageSize">
+	<td>{{currentPage*pageSize + 1 + $index}}</td>
+	<td>{{invoice.code}}</td>
+	<td>{{invoice.memCode==''?'บุคคลทั่วไป':invoice.memCode}}</td>
+	<td>{{invoice.name}}</td>
+	<td>{{invoice.issueDate|toDate|date:'ddMMMyy HH:mm:ss'|uppercase}}</td>
+	<td>{{invoice.totalAmount*1|number:2}}</td>
+	<td>{{thStatus(invoice.status)}}</td>
+	<td><a ui-sref="home.invoice_edit({uuid:invoice.uuid})" class="icon small invoice-edit"></a></td>
+</tr>
+</tbody>
+</table>
+<div class="control"></div>
+</div><!--#body-->
+</div></div><!--#content-->

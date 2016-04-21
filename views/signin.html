@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="css/signin.css"/>
+<div id="signin-page" ng-controller="SignInCtrl"><div>
+<form name="signInForm">
+	<div id="isOffline" ng-show="setting.isOffline">OFFLINE MODE</div>
+<div class="signinChrome">
+<div class="content">
+	<input type="text" ng-model="user" id="user" class="input" placeholder="ชื่อผู้ใช้"/>
+	<input type="password" ng-model="pass" id="pass" class="input" placeholder="รหัสผ่าน"/>
+	<input type="text" ng-model="otp" id="otp" class="input" placeholder="OTP" ng-show="offline"/>
+	<img src="img/atta-128.png" id="logo"/>
+</div>
+<div class="command">
+	<span ng-show="!setting.isOffline"><input type="checkbox" id="offline" ng-model="offline"/><label for="offline" class="right">Offline</label></span>
+	<input type="checkbox" id="remember" ng-model="remember"/><label for="remember" class="right">จดจำชื่อผู้ใช้ </label>
+	<button id="signin" ng-click="signIn()">ลงชื่อเข้าใช้</button>
+</div>
+</div><!--.signinChrome-->
+</form>
+
+<div>{{version}}</div>
+
+</div></div><!--.wrap-->

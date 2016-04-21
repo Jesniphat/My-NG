@@ -1,0 +1,59 @@
+<style>
+.red input {
+	color:red;
+}
+.close {
+	
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>บัตร</li><li>ชำระเงิน</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body"><div class="body-wrap">
+
+<form name="cardUseForm" novalidate>
+
+<div style="position:absolute;left:0px;top:12px;width:400px;height:256px;"><atta-card></atta-card></div>
+
+<!--<div class="widget" style="left:0px;top:288px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">ใบรับแจ้ง</label><div class="content"><select id="inform_edit" ng-model="inform" ng-options="item as item.uuid==''?'':item.code+' '+item.flight+' '+item.total_pax for item in informList" required ng-change="changeInform()" required></select></div></div></div></div>-->
+<div class="widget" style="left:0px;top:288px;width:400px;height:32px;"><form-input form-id="inform" type="text" ng-keypress="showLovInform($event)" ng-class="{lov:true}" icon="member" model="selectedInform" tab hint="ใบรับแจ้ง" change="checkMe()" autofocus required readonly></form-input></div>
+
+<div class="widget" style="left:416px;top:320px;width:400px;height:32px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/domestic.png)"><label class="label">ประเภท</label><div class="content"><input type="checkbox" ng-model="inform.is_domestic" ng-true-value="YES" ng-false-value="NO" class="switch small" id="is_domestic" readonly disabled/><label for="is_domestic">{{inform.is_domestic=='YES'?"ในประเทศ":"ต่างประเทศ"}}</label></div></div></div></div>
+
+<div class="widget" style="left:0px;top:320px;width:400px;"><form-input type="text" model="inform.code" hint="เลขที่" readonly icon="code"></form-input></div>
+<div class="widget" style="left:0px;top:352px;width:400px;"><form-input type="text" model="member_name" hint="สมาชิก" readonly icon="member"></form-input></div>
+<div class="widget" style="left:0px;top:384px;width:400px;"><form-input type="text" model="nation_name" hint="สัญชาติ" readonly icon="nation"></form-input></div>
+<div class="widget" style="left:0px;top:416px;width:400px;"><form-input type="text" model="flight_name" hint="เที่ยวบิน" readonly icon="arrival"></form-input></div>
+
+<div class="widget" style="left:416px;top:352px;width:400px;"><form-input type="text" model="inform.hotel" hint="โรงแรมที่พัก" readonly icon="address"></form-input></div>
+<div class="widget" style="left:416px;top:384px;width:400px;"><form-input type="text" model="inform.group_name" hint="ชื่อกลุ่ม" readonly icon="code"></form-input></div>
+<div class="widget" style="left:416px;top:416px;width:400px;"><form-input type="text" model="inform.note" hint="มารับโดย" readonly icon="code"></form-input></div>
+
+<div class="widget" style="left:416px;top:224px;width:400px;height:64px;font-size:28pt;text-align:center;color:#09c;">{{cardUse.numPax}} PAX</div>
+
+<div class="widget" style="left:416px;top:288px;width:400px;height:32px;"><form-input form-id="inform" type="text" icon="member" model="inform.ref_code" tab hint="รหัสอ้างอิง" disabled="!hiddenRefCode()" required></form-input></div>
+<!--
+<div class="widget" style="left:416px;top:0px;width:400px;"><form-input type="text" model="cardUse.billCode" hint="เลขที่ใบบันทึกรายการ" readonly icon="code"></form-input></div>-->
+<!--
+<div class="widget" style="left:416px;top:64px;width:400px;"><form-input type="number" money model="cardUse.unitPrice" required hint="ค่าบริการคนละ" unit="บาท" readonly icon="money"></form-input></div>
+<div class="widget" style="left:416px;top:96px;width:400px;"><form-input type="number" money model="cardUse.billTotal" required hint="รวมค่าบริการ" unit="บาท" readonly icon="money" ng-class="{money:true}"></form-input></div>
+-->
+<!--
+<div class="widget" style="left:416px;top:128px;width:400px;"><form-input type="number" money model="cardUse.billAmount" required hint="ค่าบริการก่อน VAT" unit="บาท" readonly icon="money"></form-input></div>
+<div class="widget" style="left:416px;top:160px;width:400px;"><form-input type="number" money model="cardUse.vatAmount" required hint="ภาษีมูลค่าเพิ่ม {{cardUse.vatRate}}%" unit="บาท" readonly icon="money"></form-input></div>-->
+<div class="widget" style="left:416px;top:64px;width:400px;"><form-input type="number" money model="cardUse.paxBefore" required hint="PAX ก่อนหัก" unit="PAX" readonly icon="money"></form-input></div>
+<div class="widget" style="left:416px;top:96px;width:400px;"><form-input type="number" money model="cardUse.paxAfter" required hint="PAX หลังหัก" unit="PAX" readonly icon="money" ng-class="{red:1*cardUse.paxAfter<0}"></form-input></div>
+<div class="control">
+  <button tab-stop ng-click="save(cardUseForm.$valid)" class="button save" ng-disabled="!isValid(cardUseForm)">บันทึกรายการ/พิมพ์</button>
+  <!-- <button tab-stop ng-click="jCheck()" class="button save">jCheck</button> -->
+  <!--<button tab-stop ng-click="testDisable()" class="button save" ng-disabled="!isValid(cardUseForm)">บันทึกรายการ/พิมพ์</button>-->
+  <!--
+  <button tab-stop ng-click="printRecord()" class="button print" ng-disabled="cardUse.taxInvoiceCode!=''">พิมพ์ใบเสร็จ/ใบรับเงิน</button>
+  -->
+  <button tab-stop ng-click="reset()" class="button reset">เริ่มใหม่</button>
+</div>
+</form>
+</div></div><!--#body-->
+</div></div><!--#content-->

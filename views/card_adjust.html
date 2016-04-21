@@ -1,0 +1,62 @@
+<style>
+.table-list thead th {
+	height:32px;
+	line-height:32px;
+	margin:0 1px;
+}
+.table-list td {
+	height:30px;
+	text-height:30px;
+	margin:1px;
+	padding:0 4px;
+}
+.table-list .plus {
+	color:#690;
+}
+.table-list .minus {
+	color:#c00;
+}
+
+.table-list .number {
+	text-align: right;
+}
+.minus input {
+	color:#c00;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>บัตร</li><li>{{cardAdjust.adjustType=='PLUS'?'แก้ไขเงิน (เพิ่ม)':'แก้ไขเงิน (ลด)'}}</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body"><div class="body-wrap">
+
+<form name="cardAdjustForm" novalidate>
+
+<div style="position:absolute;left:0px;top:12px;width:400px;height:256px;"><atta-card></atta-card></div>
+
+<!--<div class="widget" style="left:0px;top:160px;width:400px;height:40px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/card.png)"><label class="label"></label><div class="content"><input type="radio" class="small" ng-model="cardAdjust.adjustType" value="PLUS" name="adjustType" id="adjustType_PLUS"/><label for="adjustType_PLUS">ปรับเพิ่ม</label><input type="radio" ng-model="cardAdjust.adjustType" value="MINUS" name="adjustType" id="adjustType_MINUS" class="small"/><label for="adjustType_MINUS">ปรับลด</label></div></div></div></div>-->
+<div class="widget" style="left:0px;top:288px;width:400px;"><form-input type="number" money="0" model="cardAdjust.balanceBefore" required hint="ก่อนปรับ" unit="PAX" readonly icon="money"></form-input></div>
+<div class="widget" style="left:0px;top:320px;width:400px;"><form-input type="number" money="0" model="cardAdjust.pax" required hint="จำนวน" unit="PAX" form-id="topupPax" change="updateBalanceAfter()" icon="money" autofocus ng-class="{money:true,minus:cardAdjust.adjustType=='MINUS'}"></form-input></div>
+<div class="widget" style="left:0px;top:352px;width:400px;"><form-input type="number" money="0" model="cardAdjust.balanceAfter" required hint="หลังปรับ" unit="PAX" readonly icon="money"></form-input></div>
+
+<div class="widget" style="left:0px;top:384px;width:400px;height:64px"><form-textarea model="cardAdjust.reason" icon="code" hint="" required="true" icon="money"></form-textarea></div>
+
+<div class="widget" style="left:416px;top:0px;width:480px;height:448px">
+<table class="table-list">
+<caption><button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1" class="icon prev small">&nbsp;</button>
+{{currentPage+1}} / 1
+		<button ng-disabled="currentPage >= numPages()-1" ng-click="currentPage=currentPage+1" class="icon next small">&nbsp;</button></caption>
+<thead>
+	<tr><th>ที่</th><th>วัน/เวลา</th><th>รายการ</th><th>จำนวน</th><th>คงเหลือ</th></tr>
+</thead>
+<tbody>
+<tr ng-repeat="tx in cardTx | startFrom:currentPage*pageSize | limitTo:pageSize"><td>{{currentPage*pageSize+$index+1}}</td><td title="{{tx.code}}">{{tx.tx_date|toDate|date:'ddMMMyy HH:mm:ss'|uppercase}}</td><td title="{{tx.ref1_type+':'+tx.ref1_code}}">{{tx.tx_type+(tx.ref1_code==''?'':'('+tx.ref1_code+')')}}</td><td class="number" ng-class="{'plus':tx.pax*1>0,'minus':tx.pax*1<0,'zero':tx.pax*1==0}">{{tx.pax*1>=0?'+':''}}{{tx.pax*1|number:0}}</td><td class="number">+{{tx.balance_pax*1|number:0}}</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="control"><button tab-stop ng-click="save()" class="button save" ng-disabled="cardAdjustForm.$invalid || isUnchanged(cardAdjust)">บันทึกรายการ</button><button tab-stop ng-click="resetCardTopup()" class="button print" ng-disabled="cardAdjust.taxInvoiceCode!=''">พิมพ์ใบบันทึกรายการ</button><button tab-stop ng-click="reset()" class="button reset">เริ่มใหม่</button></div>
+</form>
+</div></div><!--#body-->
+</div></div><!--#content-->

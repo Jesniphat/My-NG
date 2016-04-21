@@ -1,0 +1,11 @@
+<h1 class="title">ตั้งค่าเครื่อง</h1>
+<form name="registerForm">
+<ul>
+<li><form-input type="text" model="register.uuid" readonly icon="code"></form-input></li>
+<li><form-input type="password" model="register.pass" hint="รหัสแอดมิน" required icon="password"></form-input></li>
+<li><form-input type="text" model="register.code" class="uppercase" hint="รหัสเครื่อง" icon="code" required pattern="[0-9]{2}[a-zA-Z]{2}" min-length="4" max-length="4"></form-input></li>
+<li><form-input type="text" model="register.airport" class="uppercase" hint="สนามบิน" icon="code" required min-length="3" max-length="3"></form-input></li>
+<li><form-input type="text" model="register.name" class="uppercase" hint="ชื่อเครื่อง" icon="code" required min-length="1" max-length="50"></form-input></li>
+<li><button ng-click="doRegister()" class="button register" ng-disabled="registerForm.$invalid">ลงทะเบียน</button></li>
+</ul>
+</form>

@@ -1,0 +1,142 @@
+<style>
+.prod-code {
+  width:8em;
+}
+.prod-name {
+  max-width:240px;
+}
+.qty {
+  width:4em;
+  text-align:right;
+}
+.table-list input {
+  border:1px solid #666;
+  border-radius:4px;
+  height:24px;
+  margin:1px;
+  line-height:24px;
+}
+.table-list input[type=text] {
+  padding:0 4px;
+}
+.table-list input[readonly]:focus {
+  outline:1px solid #fb3;
+  outline-offset:0px;
+}
+.cancelled {
+  position:absolute;
+  left:200px;
+  top:200px;
+  width:400px;
+  font-size:36pt;
+  border:3px double rgba(255,0,0,0.7);
+  color:rgba(255,0,0,0.7);
+  text-align:center;
+  -webkit-transform:rotate(15deg);
+  z-index:1000;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>พิมพ์ใบแจ้งหนี้</li><li>รายงานใบแจ้งหนี้</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+
+<form name="informForm">
+
+<div class="widget" style="left:0px;top:0px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">เลขใบแจ้งหนี้</label><input type="text" ng-model="invoice.code" name="invoicecode" id="invoicecode" style="width:100px;" tab-stop  ng-keypress="showLovInvoice($event)"> - <input type="text" ng-model="invoice.codeTo" name="invoicecodeto" id="invoicecodeto" style="width:100px;" tab-stop ng-keypress="showLovInvoice2($event)"></div></div></div>
+
+<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member.png)"><label class="label">เลขที่สมาชิก</label><input type="text" ng-model="selectedMember.code" name="member" id="member" style="width:100px;" tab-stop  ng-keypress="showLovMember($event)"> - <input type="text" ng-model="selectedMember.codeTo" name="memberTo" id="memberTo" style="width:100px;" tab-stop ng-keypress="showLovMember2($event)"></div></div></div>
+
+<div class="widget" style="left:0px;top:64px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ประเภทสมาชิก</label><div class="content"><select ng-model="param.memberType" ng-required ng-options="item.value as item.label for item in memberType"></select></div></div></div></div>
+
+<div class="widget" style="left:0px;top:96px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สถานะ</label><div class="content"><select ng-model="param.is_active" ng-required ng-options="item.value as item.label for item in isActiveList"></select></div></div></div></div>
+
+<div ng-show="isPreviewValid()">
+<div class="widget" style="left:412px;top:0px;width:820px;height:450px;border-style:solid;">
+  <div style="left:3px;top:3px;width:580px;height:120px;border-style:solid;margin:0px;float:left;">
+    <textarea ng-model="billName" name="billName" id="billName" style="margin:2px;margin-bottom:0px;width:570px;height:45px;" readonly></textarea>
+    <textarea ng-model="billAddress" name="billAddress" id="billAddress" style="margin:2px;margin-top:0px;width:570px;height:55px;" readonly></textarea>
+  </div>
+  <div style="left:593px;top:3px;width:218px;height:120px;border-style:solid;position: relative;">
+      <input type="text" ng-model="invoiceBillCode" name="invoiceBillCode" id="invoiceBillCode" style="position: absolute;left:2px;top:2px;width:211px;height:31px;" readonly>
+      <input type="text" ng-model="invoiceBillDate" name="invoiceBillDate" id="invoiceBillDate" style="position: absolute;left:2px;top:41px;width:211px;height:31px;" readonly>
+      <input type="text" ng-model="paidBillDate" name="paidBillDate" id="paidBillDate" style="position: absolute;left:2px;top:80px;width:211px;height:32px;" readonly>
+  </div>
+
+  <div style="left:3px;top:6px;width:808px;height:209px;border-style:solid;margin:0px;float:left;overflow-y:auto;">
+    <table class="table-list">
+      <thead>
+        <tr>
+          <th style="width:9em">รหัสบัญชี</th>
+          <th>รายการ</th>
+          <th style="width:5em">จำนวน</th>
+          <th style="width:6em">ราคา/หน่วย</th>
+          <th style="width:10em">จำนวนเงิน</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in invoiceBillItems">
+          <td class="center">{{invoiceBillItems[$index].prod_code}}</td>
+          <td>{{invoiceBillItems[$index].detail}}</td>
+          <td class="center">{{item.qty}}</td>
+          <td class="center">{{item.price | number:2}}</td>
+          <td class="right">{{item.qty * invoiceBillItems[$index].price | number:2}}</td>
+        </tr>
+    </tbody>
+    </table>
+  </div>
+
+  <div style="left:3px;top:10px;width:580px;height:90px;border-style:solid;margin:0px;float:left;">
+  ผิด ตก ยกเว้น E.&O.E.
+    <textarea ng-model="totalBillText" name="totalBillText" id="totalBillText" style="margin:2px;margin-top:0px;width:570px;height:60px;" readonly></textarea>
+  </div>
+  <div style="left:593px;top:225px;width:218px;height:90px;border-style:solid;position: relative;">
+    <input type="text" ng-model="billTotal" name="billTotal" id="billTotal" style="position: absolute;left:2px;top:2px;width:211px;height:22px;" readonly>
+    <input type="text" ng-model="vatBillAmount" name="vatBillAmount" id="vatBillAmount" style="position: absolute;left:2px;top:31px;width:211px;height:22px;" readonly>
+    <input type="text" ng-model="grandBillTotal" name="grandBillTotal" id="grandBillTotal" style="position: absolute;left:2px;top:60px;width:211px;height:22px;" readonly>
+  </div>
+</div>
+<div class="widget" style="left:412px;top:453px;width:820px;height:34px;border-style:solid;">
+  <textarea ng-model="billRemark" name="billRemark" id="billRemark" style="margin:2px;width:810px;height:24px;" readonly></textarea>
+</div>
+<div class="widget" style="left:1023px;top:495px;width:207px;height:34px;">
+  <button id="previousBill" ng-click="previousBill()"> < </button>
+  <input type="text" ng-model="nowInvoiceList" id="nowInvoiceList" style="margin:2px;width:50px;height:24px;" ng-change="changePage()">
+  of
+  <input type="text" ng-model="totalInvoiceList" id="totalInvoiceList" style="margin:2px;width:50px;height:24px;" readonly>
+  <button id="nextBill" ng-click="nextBill()"> > </button>
+</div>
+<div class="widget" style="left:414px;top:495px;width:207px;height:73px;">
+  <label>
+    <input type="radio" ng-model="printAction" value="printAll" id="printAction" style="display:inline;">
+    พิมพ์ทั้งหมด
+  </label><br/>
+  <label>
+    <input type="radio" ng-model="printAction" value="printPage" id="printAction1" style="display:inline;">
+    พิมพ์หน้าปัจจุบัน
+  </label><br/>
+  <label>
+    <input type="radio" ng-model="printAction" value="printPageTo" id="printAction2" style="display:inline;">
+    พิมพ์หน้า <input type="text" ng-model="pageFrom" id="pageFrom" style="width:30px;height:18px;" ng-change="checkPageForm()"> - <input type="text" ng-model="pageTo" id="pageTo" style="width:30px;height:18px;" ng-change="checkPageTo()">
+  </label>
+</div>
+</div>
+
+
+<div class="control">
+  <button id="print" tab-stop ng-click="previewInvoice()" class="button print" ng-disabled="!isValidPrint()">ดูก่อนพิมพ์</button>
+  <!-- <button id="print" tab-stop ng-click="ConfrimSave('print')" class="button print" ng-disabled="!isValidPrint()">พิมพ์ใบแจ้งหนี้</button> -->
+  <!-- <button id="print" tab-stop ng-click="jCheck()" class="button print" ng-disabled="!isValidPrint()">jCheck</button> -->
+  <button id="reset" tab-stop ng-click="reset()" class="button reset">เริ่มใหม่</button>
+  <div style="float:right">
+    <button id="print" tab-stop ng-click="printCheck()" class="button print" ng-show="isPreviewValid()">พิมพ์ใบแจ้งหนี้</button>
+  </div>
+</div>
+
+</form>
+
+</div><!--#body-->
+
+</div></div><!--#content-->

@@ -1,0 +1,50 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>ตั้งค่า</li><li><a ui-sref="home.staff">จัดการผู้ใช้งาน</a></li><li>ข้อมูลผู้ใช้งาน</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="staffForm" novalidate>
+<div class="widget" style="left:0px;top:0px;width:400px;"><form-input type="text" model="staff.user" required hint="ชื่อผู้ใช้" icon="staff" pattern="^[A-Za-z_][0-9A-Za-z_]{2,19}$" min-length="3" max-length="20" autofocus></form-input></div>
+<div class="widget" style="left:0px;top:32px;width:400px;"><form-input type="password" icon="password" model="staff.pass"  required hint="รหัสผ่าน" pattern=".{6,50}"></form-input></div>
+<div class="widget" style="left:0px;top:64px;width:400px;"><form-input type="text" icon="staff_name" model="staff.fullname" required hint="ชื่อ-นามสกุล" pattern=".{1,50}" ></form-input></div>
+<div class="widget" style="left:0px;top:96px;width:400px;"><form-input type="text" icon="staff_department" model="staff.department" required hint="แผนก" pattern=".{1,50}"></form-input></div>
+<div class="widget" style="left:0px;top:128px;width:400px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/staff_status.png)"><label class="label">สถานะ</label><div class="content"><input type="checkbox" ng-model="staff.is_active" ng-true-value="YES" ng-false-value="NO" class="switch" id="staff_status"/><label for="staff_status">{{staff.is_active=='YES'?"ใช้งานได้":"ใช้งานไม่ได้"}}</label></div></div></div></div>
+
+<div class="widget" style="left:416px;top:0px;"><div class="text">สิทธิ์การใช้งาน</div></div>
+<div class="widget" style="left:416px;top:32px;"><input type="checkbox" ng-click="toggleCheckAll()" ng-checked="allChecked(staff.acl)" id="chkAll"/><label for="chkAll">เลือกทั้งหมด</label></div>
+
+<div class="widget" style="left:416px;top:64px;"><div class="text">การรับแจ้ง</div></div>
+<div class="widget" style="left:416px;top:96px;"><input type="checkbox" ng-click="toggleCheckInformAll()" ng-checked="allInformChecked(staff.acl)" id="chkInfAll"/><label for="chkInfAll">เลือกการรับแจ้งทั้งหมด</label></div>
+<div class="widget" ng-repeat="acl in ACLs | filter:{group:0}" style="left:416px;top:{{$index*32+128}}px;"><input type="checkbox" ng-model="staffAcl[acl.key]" class="small" id="chk_{{acl.key}}"/><label for="chk_{{acl.key}}">{{acl.name}}</label></div>
+
+<div class="widget" style="left:630px;top:64px;"><div class="text">การใช้งานบัตร</div></div>
+<div class="widget" style="left:630px;top:96px;"><input type="checkbox" ng-click="toggleCheckCardUseAll()" ng-checked="allCardUseChecked(staff.acl)" id="chkCusAll"/><label for="chkCusAll">เลือกการใช้งานบัตรทั้งหมด</label></div>
+<div class="widget" ng-repeat="acl in ACLs | filter:{group:1}" style="left:630px;top:{{$index*32+128}}px;"><input type="checkbox" ng-model="staffAcl[acl.key]" class="small" id="chk_{{acl.key}}"/><label for="chk_{{acl.key}}">{{acl.name}}</label></div>
+
+<div class="widget" style="left:844px;top:64px;"><div class="text">การเงิน</div></div>
+<div class="widget" style="left:844px;top:96px;"><input type="checkbox" ng-click="toggleCheckFinanceAll()" ng-checked="allFinanceChecked(staff.acl)" id="chkFinAll"/><label for="chkFinAll">เลือกการเงินทั้งหมด</label></div>
+<div class="widget" ng-repeat="acl in ACLs | filter:{group:2}" style="left:844px;top:{{$index*32+128}}px;"><input type="checkbox" ng-model="staffAcl[acl.key]" class="small" id="chk_{{acl.key}}"/><label for="chk_{{acl.key}}">{{acl.name}}</label></div>
+
+<div class="widget" style="left:1058px;top:64px;"><div class="text">รายงาน</div></div>
+<div class="widget" style="left:1058px;top:96px;"><input type="checkbox" ng-click="toggleCheckReportAll()" ng-checked="allReportChecked(staff.acl)" id="chkBusAll"/><label for="chkBusAll">เลือกรายงานทั้งหมด</label></div>
+<div class="widget" ng-repeat="acl in ACLs | filter:{group:5}" style="left:1058px;top:{{$index*32+128}}px;"><input type="checkbox" ng-model="staffAcl[acl.key]" class="small" id="chk_{{acl.key}}"/><label for="chk_{{acl.key}}">{{acl.name}}</label></div>
+
+
+<div class="widget" style="left:416px;top:352px;"><div class="text">บัญชี</div></div>
+<div class="widget" ng-repeat="acl in ACLs | filter:{group:4}" style="left:416px;top:{{$index*32+384}}px;"><input type="checkbox" ng-model="staffAcl[acl.key]" class="small" id="chk_{{acl.key}}"/><label for="chk_{{acl.key}}">{{acl.name}}</label></div>
+
+<div class="widget" style="left:630px;top:352px;"><div class="text">เรียกรถ</div></div>
+<div class="widget" style="left:630px;top:384px;"><input type="checkbox" ng-click="toggleCheckBusscallAll()" ng-checked="allBuscallChecked(staff.acl)" id="chkReportAll"/><label for="chkReportAll">เลือกการเรียกรถทั้งหมด</label></div>
+<div class="widget" ng-repeat="acl in ACLs | filter:{group:3}" style="left:630px;top:{{$index*32+416}}px;"><input type="checkbox" ng-model="staffAcl[acl.key]" class="small" id="chk_{{acl.key}}"/><label for="chk_{{acl.key}}">{{acl.name}}</label></div>
+
+<div class="widget" style="left:844px;top:352px;"><div class="text">การตั้งค่า</div></div>
+<div class="widget" style="left:844px;top:384px;"><input type="checkbox" ng-click="toggleCheckSettingAll()" ng-checked="allSettingChecked(staff.acl)" id="chkSettingAll"/><label for="chkSettingAll">เลือกการตั้งค่าทั้งหมด</label></div>
+<div class="widget" ng-repeat="acl in ACLs | filter:{group:6}" style="left:844px;top:{{$index*32+416}}px;"><input type="checkbox" ng-model="staffAcl[acl.key]" class="small" id="chk_{{acl.key}}"/><label for="chk_{{acl.key}}">{{acl.name}}</label></div>
+
+<div class="control">
+	<button tab-stop ng-click="saveStaff(staffForm.$valid)" class="button save" ng-disabled="staffForm.$invalid || isUnchanged(staff)">บันทึก</button><button tab-stop ng-click="resetStaff()" class="button reset" ng-disabled="isUnchanged(staff)">ยกเลิก</button><button tab-stop ng-click="goBack()"class="button back">ย้อนกลับ</button>
+</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

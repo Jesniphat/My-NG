@@ -1,0 +1,100 @@
+<style>
+
+.input.license {
+	width:160px;
+	top:0px;
+	text-align:center;
+	background-color:rgba(255,255,255,0.7);
+	background-image:none;
+	height:28px;
+	line-height:28px;
+	border:0;
+	padding:0;
+}
+.input.pax {
+	width:120px;
+	top:0px;
+	text-align:center;
+	background-color:rgba(255,255,255,0.7);
+	background-image:none;
+	height:28px;
+	line-height:28px;
+	border:0;
+	padding:0;
+}
+.flight input {
+	text-transform:uppercase;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>รับแจ้ง</li><li>รับแจ้ง</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="informForm" novalidate>
+
+<div style="position:absolute;left:0px;top:12px;width:400px;height:256px;"><atta-card></atta-card></div>
+
+<!-- <div class="widget" style="left:0px;top:288px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">ใบรับแจ้ง</label><div class="content"><select id="inform_edit" ng-model="informEdit" ng-options="item as item.uuid==''?'':item.code+' '+item.flight+' '+item.total_pax for item in informList" ng-change="changeInform()"></select></div></div></div></div> -->
+
+<div class="widget" style="left:0px;top:288px;width:400px;height:32px;"><form-input form-id="inform" type="text" ng-keypress="showLovInform($event)" ng-class="{lov:true}" icon="member" model="selectedInform" tab hint="ใบรับแจ้ง" autofocus readonly></form-input></div>
+
+<div class="widget" style="left:416px;top:288px;width:400px;height:32px;"><form-input type="text" model="inform.code" readonly icon="code" hint="เลขที่ใบรับแจ้ง" ></form-input></div>
+
+
+<div class="widget" style="left:0px;top:320px;width:400px;height:32px;"><form-input form-id="member" type="text" ng-keypress="showLovMember($event)" ng-class="{lov:true}" icon="member" model="selectedMember" tab hint="สมาชิก" required readonly></form-input></div>
+
+<div class="widget" style="left:0px;top:352px;width:400px;height:32px;"><form-input form-id="nation" type="text" ng-keypress="showLovNation($event)" ng-class="{lov:true}" icon="domestic" model="selectedNation" readonly tab hint="สัญชาติ" required></form-input></div>
+
+<div class="widget" style="left:0px;top:384px;width:400px;height:32px;"><form-input form-id="flight" type="text" model="inform.flight" required icon="arrival" hint="เที่ยวบิน"  ng-class="{flight:true}" pattern="^([A-Za-z][0-9A-Za-z]|[0-9A-Za-z][A-Za-z])[A-Za-z0-9]?[0-9]{1,4}$" blur="getFlight()"></form-input></div>
+
+<div class="widget" style="left:0px;top:416px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><input type="date" ng-model="inform.date" tab-stop/><input type="time" id="flight_time" ng-model="inform.time" tab-stop/></div></div></div>
+
+<div class="widget" style="left:416px;top:0px;width:400px;height:32px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/domestic.png)"><label class="label">ประเภท</label><div class="content"><input type="checkbox" ng-model="inform.is_domestic" ng-true-value="YES" ng-false-value="NO" class="switch small" id="is_domestic"/><label for="is_domestic">{{inform.is_domestic=='YES'?"ในประเทศ":"ต่างประเทศ"}}</label></div></div></div></div>
+
+<div class="widget" style="left:416px;top:32px;width:400px;height:32px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">ประเภทใบแจ้ง</label><div class="content"><input type="checkbox" ng-model="inform.is_tmp" ng-true-value="YES" ng-false-value="NO" class="switch small" id="is_tmp"/><label for="is_tmp">{{inform.is_tmp=='YES'?"ชั่วคราว":"ปกติ"}}</label></div></div></div></div>
+
+<div class="widget" style="left:416px;top:320px;width:400px;height:32px;"><form-input form-id="hotel" type="text" ng-keypress="showLovHotel($event)" ng-class="{lov:true}" icon="address" model="selectedHotel" hint="โรงแรม/ที่พัก" required readonly tab></form-input></div>
+
+<div class="widget" style="left:416px;top:352px;width:400px;height:32px;"><form-input form-id="group_name" type="text" model="inform.group_name" required icon="code" hint="ชื่อกรุ๊ป"></form-input></div>
+
+<div class="widget" style="left:416px;top:384px;width:400px;height:32px;"><form-input form-id="note" type="text" ng-keypress="showLovTrasferBy($event)" model="inform.note" ng-class="{lov:true}" icon="code" hint="มารับโดย" required></form-input></div>
+
+<div class="widget" style="left:416px;top:416px;width:400px;height:32px;"><form-input form-id="ref_code" type="text" model="inform.ref_code" icon="code" hint="เลขใบแจ้งอ้างอิง"></form-input></div>
+
+
+<div class="widget" style="left:416px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/bus.png)"><input type="text" ng-model="license" name="license" id="license" class="input license" placeholder="เลขทะเบียนรถ" tab-stop ng-keydown="checkEndLicense($event)">
+<input type="number" class="input pax" ng-model="pax" name="pax" id="pax" placeholder="จำนวนคน" tab-stop ng-keydown="addBus($event,informForm)"></div></div></div>
+
+<div class="widget" style="left:416px;top:96px;width:400px;height:400px;">
+<table class="table-list">
+<thead>
+<tr>
+	<th>#</th>
+	<th>ทะเบียนรถ</th>
+	<th>PAX</th>
+	<th>&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="bus in inform.bus_list">
+	<td class="center">{{$index+1}}</td>
+	<td class="center">{{bus.license}}</td>
+	<td class="center">{{bus.pax}}</td>
+	<td class="center"><a href="#" class="icon small remove" ng-click="removeBus($event, $index)">&nbsp;</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="control">
+	<button id="saveInform" tab-stop ng-click="save()" class="button save" ng-disabled="!isValid(informForm)">บันทึกรายการ</button>
+	<button tab-stop ng-click="reset()" id="reset" class="button reset">เริ่มใหม่</button>
+	<!-- <button tab-stop ng-click="jes_test()" id="jes_test" class="jes_test">ทดสอบ</button> -->
+	<input type="checkbox" ng-model="printInform" ng-true-value="YES" ng-false-value="NO" class="switch small" id="print_inform" ng-change="savePrintInform()"/><label for="print_inform">{{printInform=='YES'?"พิมพ์ใบรับแจ้ง":"ไม่พิมพ์"}}</label>
+
+	<button ng-click="buyInform()" id="buy" class="button" style="float:right" ng-show="isReceipt">ขายใบแจ้ง</button>
+</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

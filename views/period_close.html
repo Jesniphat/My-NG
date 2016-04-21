@@ -1,0 +1,45 @@
+
+<div id="content"><div>
+<div id="nav">
+<ul><li>ปิดผลัด</li><li>ปิดผลัด</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body"><div class="body-wrap">
+
+<form name="periodCloseForm" novalidate>
+  <div class="widget" style="left:0px;top:0px;width:400px;height:32px;"><form-input type="text" model="p_name" hint="ผลัดปัจจุบัน" readonly icon="date"  ng-disabled = "isHide()"></form-input></div>
+
+  <div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">สนามบิน</label><div class="content"><select id="airportbox" ng-model="airportbox" ng-options="item as item for item in airportList" ng-required tab-stop ng-change="getStation()"  ng-disabled = "validAirportList()"></select></div></div></div></div>
+
+  <div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">เคาน์เตอร์</label><div class="content"><select id="station" ng-model="station" ng-options="item as item.code for item in stationList" ng-required tab-stop ng-change="stationChange()"  ng-disabled = "isHide()"></select></div></div></div></div>
+
+  <div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">วันที่</label><input type="date" ng-model="periodDate" tab-stop autofocus></div></div></div>
+
+  <div class="widget" style="left:0px;top:128px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ผลัด</label>
+    <div class="content"><input type="radio" class="small" ng-model="periodType" value="AM" name="periodType" id="periodType_AM" ng-hide="                      periodType=='DAY'"  ng-disabled = "isHide()"><label for="periodType_AM" ng-hide="periodType=='DAY'">กลางวัน</label>
+                         <input type="radio" class="small" ng-model="periodType" value="PM" name="periodType" id="periodType_PM" ng-hide="periodType=='DAY'"  ng-disabled = "isHide()"><label for="periodType_PM" ng-hide="periodType=='DAY'">กลางคืน</label>
+                         <input type="radio" class="small" ng-model="periodType" value="All" name="periodType" id="periodType_ALL" ng-hide="periodType=='DAY'"  ng-disabled = "isHideAllRedio()"><label for="periodType_ALL" ng-hide="periodType=='DAY'">ทั้งหมด</label>
+                         <input type="radio" class="small" ng-model="periodType" value="DAY" name="periodType" id="periodType_DAY" ng-hide="periodType!='DAY'" ng-disabled = "isHide()"><label for="periodType_DAY" ng-hide="periodType!='DAY'">ตลอดวัน</label>
+                         </div></div></div></div>
+
+  <div class="widget" style="left:0px;top:160px;width:400px;height:237px">
+    <div class="input-wrap">
+      <div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="receipt_summary" ng-model="report" value="receipt_summary" ng-click="getStation()"> <label for="receipt_summary">รายงานยอดเงินรับ</label></div>
+      <div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="receive_voucher" ng-model="report" value="receive_voucher" ng-click="getStation()"> <label for="receive_voucher">รายงานใบสำคัญรับ (RV)</label></div>
+      <div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="receipt_list" ng-model="report" value="receipt_list1" ng-click="getStation()"> <label for="receipt_list">รายการใบเสร็จรับเงิน</label></div>
+      <div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="inform_list" ng-model="report" value="inform_list1" ng-click="getStation()"> <label for="inform_list">รายการใบแจ้ง</label></div>
+      <div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="inform_list_nopaid" ng-model="report" value="inform_list_nopaid" ng-click="getStation()"> <label for="inform_list_nopaid">รายการใบแจ้งที่ไม่ได้รับชำระ</label></div>
+      <div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="coupon_list" ng-model="report" value="coupon_list" ng-click="getStation()"> <label for="coupon_list">รายการการเติมคูปอง</label></div>
+      <div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="sportCheckPrint" ng-model="report" value="sportCheckPrint" ng-click="getStation()"> <label for="sportCheckPrint">รายงาน Spot Check</label></div>
+      <div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="kingpower_list" ng-model="report" value="kingpower_list" ng-disabled = "disAirport()"> <label for="kingpower_list">รายงานส่ง King Power</label></div>
+    </div>
+  </div>
+
+  <div class="control">
+    <button tab-stop ng-click="printReport()" class="button print" ng-disabled = "isHide()">พิมพ์</button>
+    <button tab-stop ng-click="closePeriod()" class="button close" ng-disabled = "isHide()">ปิดผลัด</button>
+    <button tab-stop ng-click="exportKingPower()" class="button close" ng-disabled = "!isHide()">Export File</button>
+  </div>
+</form>
+</div></div><!--#body-->
+</div></div><!--#content-->

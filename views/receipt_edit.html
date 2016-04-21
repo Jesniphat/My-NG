@@ -1,0 +1,261 @@
+<style type="text/css">
+	.block-form{padding: 5px;}
+	.col9,.col8,.col6,.col4,.col3{display: inline-block;padding: 0 5px 0 5px;margin: 0px;}
+	.block-form .col12{width: 910px; /*margin: auto;*/padding: 0px;overflow: auto;}
+	.block-form .col9{width: 665px;}
+	.block-form .col8{width: 590px;}
+	.block-form .col6{width: 440px;}
+	.invoice-member .col4{min-height: 90px;}
+	.block-form .col4{width: 290px;vertical-align: top;}
+	.block-form .col3{width: 215px;}
+	input.save_type,input.is_vat{display: inline;}
+	.invoice_table tr td:first-child{text-align: center;}
+	input[type="text"].invoicetext{width: 100px;height: 20px;font-size: 13px;border-radius: 2px;border: 1px solid #000;}
+	input[type="number"].invoicetext{width: 100px;height: 20px;font-size: 13px;border-radius: 2px;border: 1px solid #000;}
+	input[type="text"].invoicedate{border-radius: 2px;border: 1px solid #000;	}
+	select{border-radius: 2px;border: 1px solid #000;	}
+	textarea {resize: none;border-radius: 2px;border: 1px solid #000;font-size: 13px;height: 45px;}
+	.datagrid.invoice{width: 910px;text-align: center;}
+	.datagrid.invoice tr{margin: 0;padding: 0;}
+	.datagrid.invoice tr td{margin: 0;padding: 0;}
+	.datagrid.invoice input {height: 20px;font-size: 13px;border-radius: 2px;border: 1px solid #33b5e5;padding: 1px;width: 125px;}
+	.datagrid.invoice input:disabled{height: 20px;font-size: 13px;border-radius: 2px;border: 1px solid #33b5e5;padding: 1px;width: 125px;outline: none;-webkit-filter: saturate(100%);background-color: #fafafa;}
+	#block-paidby{
+		border: 1px solid #e7e8e8;
+		border-radius: 10px;
+	}
+	.isvat_label{
+		height: 0px;
+		position: relative;
+	}
+	#paid_by input[type="date"].invoicetext{width: 130px;height: 20px;font-size: 13px;border-radius: 2px;border: 1px solid #000;}
+</style>
+
+<div id="content"><div>
+<div id="nav">
+<ul><li>การเงิน</li><li><a ui-sref="home.receipt">รายการใบเสร็จ</a></li><li>สร้างใบเสร็จ</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="receiptForm" novalidate>
+	<div class="block-form">
+		<div class="col12">
+			<div class="col9">
+				<form-input type="text" icon="receipt" model="receipt.code" hint="" pattern=".{13,13}" maxlength="13" readonly="readonly"></form-input>
+				(Reissue DDMMYYYY)
+			</div>
+			<div class="col3">
+				วันที่
+				<input type="date" placeholder="YYYY-MM-DD" ng-model="receipt.issueDate" class="invoicedate" style="width: 170px;">
+			</div>
+		</div>
+	</div>
+	<div class="block-form invoice-member">
+		<div class="col12">
+			<div class="col4">
+				<table class="invoice_table">
+					<tr>
+						<td>
+							<label>เลขที่สมาชิก</label>
+						</td>
+						<td colspan="2">
+							<input id="member_code" class="invoicetext" type="text" ng-model="receipt.memCode" placeholder="เลขที่สมาชิก" ng-keyup="setFocus('search_invoice',$event,'');" ng-change="getMemType(receipt.memCode);"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label>เลขที่ใบแจ้งหนี้</label>
+						</td>
+						<td colspan="2">	
+							<input required ng-keyup="setProduct();" id="invoice_code" class="invoicetext" type="text" ng-model="invoice_code" placeholder="เลขที่ใบแจ้งหนี้" />
+							<button id="search_invoice" ng-click="searchInvoice();" type="button">ค้นหา</button>
+							<input type="hidden" ng-model="receipt.invoice_uuid" />								
+						</td>
+					</tr>					
+				</table>
+			</div><div class="col4">
+				<table>
+					<tr>
+						<td>ชื่อ</td>
+						<td>
+							<input id="receipt_name" style="width: 240px;" class="invoicetext" type="text" ng-model="receipt.name" placeholder="ชื่อสมาชิก" />
+						</td>
+					</tr>
+					<tr>
+						<td>ที่อยู่</td>
+						<td>
+							<textarea id="receipt_addr" style="width: 240px;" ng-model="receipt.addr" placeholder="ที่อยู่"></textarea>
+						</td>
+					</tr>
+				</table>
+			</div><div class="col4">
+				กำหนดชำระเงิน
+				<br/>
+				<input id="invoice_date" type="text" placeholder="Tax ID" ng-model="receipt.taxId" class="invoicedate" />
+				<br/>
+				สถานะ
+				<select ng-model="receipt.status">
+					<option value="PAID">ชำระเงินแล้ว</option>
+					<option value="CANCELLED">ยกเลิก</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<div class="block-form">
+		<div class="col12">
+			<table class="datagrid invoice product" >
+				<thead>
+					<tr>
+						<td>ที่</td>
+						<td>รหัสสินค้า</td>
+						<td>ชื่อสินค้า</td>
+						<td>จำนวน</td>
+						<td>ราคา/หน่วย</td>
+						<td>ชื่อหน่วย</td>
+						<td>ราคาทั้งหมด</td>
+						<td>สถานะVat</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="product in products">
+						<td>{{$index+1}}</td>
+						<td><input disabled id="product_code_{{$index}}" type="text" ng-model="products[$index].code" /></td>
+						<td><input type="text" ng-model="products[$index].name" disabled title="ไม่สามารถแก้ไขได้"/></td>
+						<td><input disabled id="qty_{{$index}}" type="text" ng-model="products[$index].qty" /></td>
+						<td><input type="text" ng-model="products[$index].unitPrice" title="" ng-change="calAmount($index); setChecked(null)"/></td>
+						<td><input type="text" ng-model="products[$index].unit" disabled title="ไม่สามารถแก้ไขได้"/></td>
+						<td><input type="text" ng-model="products[$index].amount" disabled title="ไม่สามารถแก้ไขได้"/></td>
+						<td><input id="isvat{{$index}}"  type="checkbox" class="small" ng-model="products[$index].isVat" disabled /><label style="height: 14px;" for="isvat{{$index}}" title="ไม่สามารถแก้ไขได้"></label>
+							<input type="hidden" ng-model="products[$index].uuid"/></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col12">
+			<div class="col8" style="vertical-align:top;">
+				<h3 style="padding: 0;margin: 0 0 5px 20px;">ชำระโดย</h3>
+				<div id="block-paidby">
+					<table id="paid_by">
+						<tr>
+							<td>
+								<input id="by_cash" class="small" type="checkbox" ng-model="by_cash" name="by_cash" />
+								<label for="by_cash">เงินสด</label>
+							</td>
+							<td>
+								<input id="by_cash_count"  tab-stop class="invoicetext" type="number" ng-model="by_cash_count" placeholder="จำนวนเงิน" ng-change="setChecked('by_cash_count');"/>
+							</td>
+							<td>
+
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input id="by_cheque" class="small" type="checkbox" ng-model="by_cheque" name="by_cheque" />
+								<label for="by_cheque">เช็ค</label>
+							</td>
+							<td>
+								<input id="by_cheque_count"  tab-stop class="invoicetext" type="number" ng-model="by_cheque_count" placeholder="จำนวนเงิน" ng-change="setChecked('by_cheque_count')" />
+							</td>
+							<td>
+								<table>
+									<tr>
+										<td>ธนาคาร</td>
+										<td>
+											<select tab-stop ng-required="by_cheque" id="cheque_bank" name="cheque_bank" ng-model="receipt.bankCheque" class="invoicetext" style="width:102px;">
+												<option ng-repeat="bank in banks" value="{{bank.name}}">
+													{{bank.name}}
+												</option>
+											</select>
+										</td>
+										<td>สาขา</td>
+										<td><input tab-stop ng-required="by_cheque" id="cheque_bank_branch"  class="invoicetext" type="text" ng-model="receipt.branchCheque" placeholder="สาขา" /></td>
+									</tr>
+									<tr>
+										<td>เลขที่</td>
+										<td><input tab-stop ng-required="by_cheque" id="cheque_chequeNo"  class="invoicetext" type="text" ng-model="receipt.chequeNo" placeholder="เลขที่เช็ค" /></td>
+										<td>วันที่</td>
+										<td><input tab-stop ng-required="by_cheque" id="cheque_chequeDate"  class="invoicetext" type="date" ng-model="receipt.chequeDate" placeholder="วันที่" /></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input id="by_payin" class="small" type="checkbox" ng-model="by_payin" name="by_payin" />
+								<label for="by_payin">Pay-in</label>
+							</td>
+							<td>
+								<input tab-stop id="by_payin_count"  class="invoicetext" type="number" ng-model="by_payin_count" placeholder="จำนวนเงิน" ng-change="setChecked('by_payin_count')" />
+							</td>
+							<td>
+								<table>
+									<tr>
+										<td>ธนาคาร</td>
+										<td>
+											<select tab-stop ng-required="by_payin" id="payin_bank" name="payin_bank" ng-model="receipt.bankPayin" class="invoicetext" style="width:102px;">
+												<option ng-repeat="bank in banks" value="{{bank.name}}">
+													{{bank.name}}
+												</option>
+											</select>
+										</td>
+										<td>สาขา</td>
+										<td><input tab-stop ng-required="by_payin" id="payin_bank_branch"  class="invoicetext" type="text" ng-model="receipt.branchPayin" placeholder="สาขา" /></td>
+									</tr>
+									<tr>
+										<td>เลขที่</td>
+										<td><input tab-stop ng-required="by_payin" id="payin_chequeNo"  class="invoicetext" type="text" ng-model="receipt.payinNo" placeholder="เลขที่เช็ค" /></td>
+										<td>วันที่</td>
+										<td><input tab-stop ng-required="by_payin" id="payin_chequeDate"  class="invoicetext" type="date" ng-model="receipt.payinDate" placeholder="วันที่" /></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="col4">
+				<table style="float:right;">
+					<tr>
+						<td>ราคาทั้งหมด</td>
+						<td><input disabled required class="invoicetext" type="text" ng-model="receipt.amount" placeholder="ราคาทั้งหมด"/> บาท</td>
+					</tr>
+					<tr>
+						<td>Vat</td>
+						<td><input disabled id="receipt_vatRate" value="0" class="invoicetext" type="text" ng-model="receipt.vatRate" placeholder="Vat"/> %</td>
+					</tr>
+					<tr>
+						<td>Vat</td>
+						<td><input disabled id="receipt_vatAmount" value="0" class="invoicetext" type="text" ng-model="receipt.vatAmount" placeholder="รวมVat"/>บาท</td>
+					</tr>
+					<tr>
+						<td>W/H Tax</td>
+						<td><input disabled id="receipt_whTaxRate" value="3" class="invoicetext" type="text" ng-model="receipt.whTaxRate" placeholder="W/H Tax"/></td>
+					</tr>
+					<tr>
+						<td>รวม W/H Tax</td>
+						<td><input disabled id="receipt_amount_whTax" value="0" class="invoicetext" type="text" ng-model="receipt.whTaxAmount" placeholder="รวม W/H Tax"/></td>
+					</tr>
+					<tr>
+						<td>รวม</td>
+						<td><input required disabled class="invoicetext" type="text" ng-model="receipt.totalAmount" placeholder="รวม"/> บาท</td>
+					</tr>
+					<tr>
+					</tr>
+					<tr>
+						<td>รับเงิน</td>
+						<td><input disabled required class="invoicetext" type="text" ng-model="get_money" placeholder="รับเงิน"/> บาท</td>
+					</tr>
+					<tr>
+						<td>ทอนเงิน</td>
+						<td><input disabled required class="invoicetext" type="text" ng-model="give_money" placeholder="ทอนเงิน"/> บาท</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="control">
+		<button tab-stop ng-click="saveReceipt(receiptForm.$valid);" class="button save" ng-disabled="receiptForm.$invalid">บันทึก</button><button ng-click="reset()" class="button reset" ng-disabled="">ยกเลิก</button><button ng-click="goBack()"class="button back">ย้อนกลับ</button>
+	</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

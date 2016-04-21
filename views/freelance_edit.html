@@ -1,0 +1,35 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>สมาชิก</li><li><a ui-sref="home.freelance">ฟรีแลนซ์</a></li><li>ข้อมูลฟรีแลนซ์</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="freelanceForm" novalidate>
+<div class="widget" style="left:0px;top:0px;width:400px;"><form-input type="text" model="freelance.code" readonly hint="รหัส" icon="freelance"></form-input></div>
+<div class="widget" style="left:0px;top:32px;width:400px;"><form-input type="text" icon="name" model="freelance.name_th" required autofocus hint="ชื่อ-นามสกุล (ไทย)" pattern=".{1,50}" ></form-input></div>
+<div class="widget" style="left:0px;top:64px;width:400px;"><form-input type="text" icon="name" model="freelance.name_en" required hint="ชื่อ-นามสกุล (อังกฤษ)" pattern=".{1,50}" ></form-input></div>
+<div class="widget" style="left:0px;top:96px;width:400px;height:64px;"><form-textarea type="text" icon="address" model="freelance.address" hint="ที่อยู่"  ></form-textarea></div>
+<div class="widget" style="left:0px;top:160px;width:400px;"><form-input type="text" icon="email" model="freelance.email" hint="อีเมล" pattern="^[^@]+@[^@\.]+(\.[^@\.]+)+(\s*,\s*[^@]+@[^@\.]+(\.[^@\.]+)+)*$"></form-input></div>
+<div class="widget" style="left:0px;top:192px;width:400px;"><form-input type="text" icon="mobile" model="freelance.mobile" hint="มือถือ" pattern="^08[0-9]{8}$" max-length="10"></form-input></div>
+
+
+<div class="widget" style="left:416px;top:0px;width:400px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/freelance_status.png)"><label class="label">สถานะ</label><div class="content"><input type="checkbox" ng-model="freelance.is_active" ng-true-value="YES" ng-false-value="NO" class="switch" id="freelance_is_active"/><label for="freelance_is_active">{{freelance.is_active=='YES'?"ใช้งานได้":"ใช้งานไม่ได้"}}</label></div></div></div></div>
+<div class="widget" style="left:416px;top:32px;width:400px;height:192px;"><form-textarea type="text" icon="code" model="freelance.note" hint="บันทึกข้อความ"  ></form-textarea></div>
+
+<div style="float:right;margin-right:295px;">
+	<button tab-stop ng-click="previousClick(freelance.code)" class="icon prevblack" ng-disabled="!nextAndPreviodsCheck()">&nbsp;</button>
+	<button tab-stop ng-click="nextClick(freelance.code)" class="icon nextblack" ng-disabled="!nextAndPreviodsCheck()">&nbsp;</button>
+</div>
+
+<div class="control">
+	<button tab-stop ng-click="saveFreelance(freelanceForm.$valid)" class="button save" ng-disabled="freelanceForm.$invalid || isUnchanged()">บันทึก</button>
+	<button tab-stop ng-click="resetFreelance()" class="button reset" ng-disabled="isUnchanged()">ยกเลิก</button>
+	<button tab-stop ng-click="goBack()"class="button back">ย้อนกลับ</button>
+	<div style="float:right">
+<!-- 		<button tab-stop ng-click="previousClick(freelance.code)" class="button preview" ng-disabled="!nextAndPreviodsCheck()"> << PREVIOUS </button>
+		<button tab-stop ng-click="nextClick(freelance.code)" class="button preview" ng-disabled="!nextAndPreviodsCheck()"> NEXT >> </button> -->
+	</div>
+</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

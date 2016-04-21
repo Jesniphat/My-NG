@@ -1,0 +1,182 @@
+<meta charset="UTF-8">
+<style type="text/css">
+	.block-form{padding: 5px;}
+	.col9,.col8,.col6,.col4,.col3{display: inline-block;padding: 0 5px 0 5px;margin: 0px;}
+	.block-form .col12{width: 910px;/*margin: auto;*/padding: 0px;overflow: auto;}
+	.block-form .col9{width: 665px;}
+	.block-form .col8{width: 590px;}
+	.block-form .col6{width: 440px;}
+	.invoice-member .col4{min-height: 90px;}
+	.block-form .col4{width: 290px;vertical-align: top;}
+	.block-form .col3{width: 210px;}
+	input.save_type,input.is_vat{display: inline;}
+	.invoice_table tr td:first-child{text-align: center;}
+	input[type="text"].invoicetext{width: 100px;height: 20px;font-size: 13px;border-radius: 2px;border: 1px solid #000;}
+	input[type="text"].invoicedate{border-radius: 2px;border: 1px solid #000;	}
+	select{border-radius: 2px;border: 1px solid #000;	}
+	textarea {resize: none;border-radius: 2px;border: 1px solid #000;font-size: 13px;height: 45px;}
+	.datagrid.invoice{width: 910px;text-align: center;}
+	.datagrid.invoice tr td{margin: 0;padding: 0;}
+	.datagrid.invoice input {height: 20px;font-size: 13px;border-radius: 2px;border: 1px solid #33b5e5;padding: 1px;width: 125px;}
+	.datagrid.invoice input:disabled{height: 20px;font-size: 13px;border-radius: 2px;border: 1px solid #33b5e5;padding: 1px;width: 125px;outline: none;-webkit-filter: saturate(100%);background-color: #fafafa;}
+
+</style>
+
+<div id="content"><div>
+<div id="nav">
+<ul><li>การเงิน</li><li><a ui-sref="home.invoice">รายการแจ้งหนี้</a></li><li>สร้างใบแจ้งหนี้</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="invoiceForm" novalidate>
+	<div class="block-form">
+		<div class="col12">
+			<div class="col9">
+				<form-input tab-stop type="text" icon="invoice" model="invoice.code" hint="" pattern=".{10,10}" maxlength="10" readonly="readonly"></form-input>
+				(Reissue DDMMYYYY)
+			</div>
+			<div class="col3">
+				วันที่
+				<input tab-stop type="date" placeholder="YYYY-MM-DD" ng-model="invoice.issueDate" class="invoicedate" style="width: 170px;">
+			</div>
+		</div>
+	</div>
+	<div class="block-form invoice-member">
+		<div class="col12">
+			<div class="col4">
+				<table class="invoice_table">
+					<tr>
+						<td>
+							<label for="save_type_member">สมาชิก</label>
+						</td>
+						<td>
+							<input tab-stop ng-disabled="status == 'edit'" id="save_type_member" type="radio" ng-model="save_type" name="save_type" class="save_type" value="member" ng-click="clearInvoicetext()"/>
+						</td>
+						<td colspan="2">
+							<input tab-stop id="member_code" ng-change="getMemType(invoice.memCode)" class="invoicetext" type="text" ng-model="invoice.memCode" placeholder="เลขที่สมาชิก" ng-disabled="save_type != 'member' || status == 'edit'"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="save_type_non_member">ทั่วไป</label>
+						</td>
+						<td colspan="3">						
+							<input tab-stop ng-disabled="status == 'edit'"  id="save_type_non_member" type="radio" ng-model="save_type" name="save_type" class="save_type" value="non_member" ng-click="clearInvoicetext()"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="save_type_batch">กลุ่ม</label>
+						</td>
+						<td>
+							<input tab-stop ng-disabled="status == 'edit'"  id="save_type_batch" type="radio" ng-model="save_type" name="save_type" class="save_type" value="batch" ng-click="clearInvoicetext()"/>
+						</td>
+						<td>
+							<input tab-stop class="invoicetext" type="text" ng-model="batch_from" class="batch_text" placeholder="ตั้งแต่" ng-disabled="save_type != 'batch' || status == 'edit'"/>
+						</td>
+						<td>
+							<input tab-stop class="invoicetext" type="text" ng-model="batch_to" class="batch_text" placeholder="ถึง" ng-disabled="save_type != 'batch' || status == 'edit'"/>
+						</td>
+					</tr>
+				</table>
+			</div><div class="col4">
+				<table>
+					<tr>
+						<td>ชื่อ</td>
+						<td>
+							<input tab-stop id="invoice_name" style="width: 240px;" class="invoicetext" type="text" ng-model="invoice.name" placeholder="ชื่อสมาชิก" />
+						</td>
+					</tr>
+					<tr>
+						<td>ที่อยู่</td>
+						<td>
+							<textarea id="invoive_addr" style="width: 240px;" ng-model="invoice.addr" placeholder="ที่อยู่"></textarea>
+						</td>
+					</tr>
+				</table>
+			</div><div class="col4">
+				กำหนดชำระเงิน
+				<br/>
+				<input tab-stop required id="invoice_date" type="date" placeholder="YYYY-MM-DD" ng-model="invoice.dueDate" class="invoicedate" >
+				สถานะ
+				<br/>
+				<select ng-model="invoice.status">
+					<option value="WAITING">รอการชำระเงิน</option>
+					<option value="PAID">ชำระเงินแล้ว</option>
+					<option value="CANCELLED">ยกเลิก</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<div class="block-form">
+		<div class="col12">
+			<table class="datagrid invoice product" >
+				<thead>
+					<tr>
+						<td>ที่</td>
+						<td>รหัสสินค้า</td>
+						<td>ชื่อสินค้า</td>
+						<td>จำนวน</td>
+						<td>ราคา/หน่วย</td>
+						<td>ชื่อหน่วย</td>
+						<td>ราคาทั้งหมด</td>
+						<td>สถานะVat</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="product in products">
+						<td>{{$index+1}}</td>
+						<td><input tab-stop id="product_code_{{$index}}" type="text" ng-model="products[$index].code" ng-change="getProduct($index); calAll(); calVat();" /></td>
+						<td><input tab-stop type="text" ng-model="products[$index].name" disabled title="ไม่สามารถแก้ไขได้"/></td>
+						<td><input tab-stop id="qty_{{$index}}" type="text" ng-model="products[$index].qty" ng-change="calAmount($index); calAll(); calVat();" /></td>
+						<td><input id="product_unitprice_{{$index}}" tab-stop type="text" ng-model="products[$index].unitPrice" ng-change="calAmount($index); calAll(); calVat();"/></td>
+						<td><input tab-stop type="text" ng-model="products[$index].unit" disabled title="ไม่สามารถแก้ไขได้"/></td>
+						<td><input tab-stop type="text" ng-model="products[$index].amount" disabled title="ไม่สามารถแก้ไขได้"/></td>
+						<td><input tab-stop id="isvat{{$index}}"  type="checkbox" class="small" ng-model="products[$index].isVat" disabled /><label style="height: 14px;" for="isvat{{$index}}" title="ไม่สามารถแก้ไขได้"></label>
+							<input type="hidden" ng-model="products[$index].uuid"/></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col12">
+			<div class="col3" style="vertical-align:top;">หมายเหตุภายใน
+				<br/><textarea tab-stop id="invoice_remark1"  ng-model="invoice.remark1" style="width:200px" >
+				</textarea>
+			</div>
+			<div class="col3" style="vertical-align:top;">หมายเหตุภายนอก
+				<br/><textarea tab-stop id="invoice_remark2"  ng-model="invoice.remark2" style="width:200px">
+				</textarea>
+			</div>
+			<div class="col6">
+				<table style="float:right;">
+					<tr>
+						<td>ราคาทั้งหมด</td>
+						<td><input tab-stop required disabled class="invoicetext" type="text" ng-model="invoice.amount" placeholder="ราคาทั้งหมด"/> บาท</td>
+					</tr>
+					<tr>
+						<td>Vat</td>
+						<td><input tab-stop id="invoice_vatRate" value="0" class="invoicetext" type="text" ng-model="invoice.vatRate" placeholder="Vat" ng-change="calVat();"/> %</td>
+					</tr>
+					<tr>
+						<td>ราคารวม Vat</td>
+						<td><input tab-stop required disabled class="invoicetext" type="text" ng-model="invoice.vatAmount" placeholder="รวม Vat"/> บาท</td>
+					</tr>
+					<tr>
+						<td>รวม</td>
+						<td><input tab-stop required disabled class="invoicetext" type="text" ng-model="invoice.totalAmount" placeholder="รวม"/> บาท</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="block-form">
+		<div class="col12">
+			<form-input type="text" icon="report" model="receipt" hint="เลขที่ใบเสร็จ" pattern=".{13,13}"></form-input>
+		</div>
+	</div>
+	<div class="control">
+		<button tab-stop ng-click="saveInvoice(invoiceForm.$valid)" class="button save" ng-disabled="invoiceForm.$invalid">บันทึก</button><button tab-stop ng-click="reset();" class="button reset" ng-disabled="">ยกเลิก</button><button tab-stop ng-click="goBack()"class="button back">ย้อนกลับ</button>
+	</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

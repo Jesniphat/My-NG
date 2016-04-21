@@ -1,0 +1,13 @@
+#loading-page {
+	width: 640px;
+	margin: 0 auto;
+	text-align: center;
+}
+.title {
+	text-align:center;
+	font-size:16pt;
+}
+form {
+	width:480px;
+	margin: 0 auto;
+}

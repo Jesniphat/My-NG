@@ -1,0 +1,80 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>ตั้งค่า</li><li>ข้อมูลพื้นฐาน</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="settingForm">
+
+<div class="widget" style="left:0px;top:0px;width:912px;">
+  <div class="tab">
+    <span ng-click="switchTab(0)" ng-class="{'active':currentTab==0}">ตั้งค่าระบบ</span>
+    <span ng-click="switchTab(1)" ng-class="{'active':currentTab==1}" ng-show="station_acl()">ตั้งค่าเครื่อง</span>
+    <span ng-click="switchTab(2)" ng-class="{'active':currentTab==2}">ตั้งค่ารหัส/ใบเสร็จ</span>
+  </div>
+</div>
+
+<div ng-show="currentTab==0">
+<div class="widget" style="left:0px;top:32px;width:400px;"><form-input type="number" money icon="card_price" model="config.card_price" hint="ราคาบัตรต่อใบ" unit="บาท" required autofocus></form-input></div>
+<div class="widget" style="left:0px;top:64px;width:400px;"><form-input type="number" money icon="coupon_price" model="config.coupon_price" hint="ราคาคูปองต่อใบ" unit="บาท"  required></form-input></div>
+<div class="widget" style="left:0px;top:96px;width:400px;"><form-input type="number" money icon="vat" model="config.vat_rate" hint="อัตราภาษีมูลค่าเพิ่ม" unit="%" required></form-input></div>
+</div><!-- tab0 -->
+
+<div ng-show="currentTab==1&&station_acl()">
+
+
+<div class="widget" style="left:0px;top:32px;width:400px;"><form-input type="text" model="data.uuid" icon="card" readonly hint="ID" form-id="uuid"></form-input></div>
+
+<div class="widget" style="left:0px;top:64px;width:400px;"><form-input type="text" model="data.code" icon="card" hint="เคาน์เตอร์" form-id="code"></form-input></div>
+
+<div class="widget" style="left:0px;top:96px;width:400px;"><form-input type="text" model="data.airport" icon="card" hint="สนามบิน" pattern="(DMK|BKK)" form-id="airport"></form-input></div>
+
+<div class="widget" style="left:0px;top:128px;width:400px;"><form-input type="text" model="data.name" icon="card" hint="ชื่อเครื่อง" form-id="name"></form-input></div>
+
+
+<div class="widget" style="left:0px;top:192px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">Web Service</label><div class="content"><select id="webService" ng-model="webService" ng-options="item as item.name for item in webServiceList" ng-required tab-stop></select></div></div></div></div>
+
+<div class="widget" style="left:0px;top:224px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">Reporting Service</label><div class="content"><select id="reportService" ng-model="reportService" ng-options="item as item.name for item in reportServiceList" ng-required tab-stop></select></div></div></div></div>
+
+
+<!--DOT-->
+<div class="widget" style="left:0px;top:288px;width:400px;"><form-input type="text" model="data.printServerDot" icon="print" required hint="เครื่องพิมพ์หัวเข็ม" form-id="printServerDot"></form-input></div>
+<div class="widget" style="left:400px;top:288px;width:400px;"><button ng-click="listPrinter('dot')">Refresh</button></div>
+
+<div class="widget" style="left:0px;top:320px;width:400px;height:32px;"><form-input type="text" model="data.printerDot" icon="print" hint="เครื่องพิม์หัวเข็ม" form-id="name" readonly></form-input></div>
+
+<div class="widget" style="left:416px;top:320px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/print.png)"><label class="label"></label><div class="content"><select id="printerDot" ng-model="printerDot" ng-options="item as item.name for item in printerDots" ng-required tab-stop ng-change="selectPrinterDot()"></select></div></div></div></div>
+<!-- LASER -->
+
+<div class="widget" style="left:0px;top:352px;width:400px;"><form-input type="text" model="data.printServerLaser" icon="print" required hint="เครื่องพิมพ์เลเซอร์" form-id="printServerLaser"></form-input></div>
+<div class="widget" style="left:400px;top:352px;width:400px;"><button ng-click="listPrinter('laser')">Refresh</button></div>
+
+<div class="widget" style="left:0px;top:384px;width:400px;height:32px;"><form-input type="text" model="data.printerLaser" icon="print" hint="เครื่องพิม์หัวเข็ม" form-id="name" readonly></form-input></div>
+
+<div class="widget" style="left:416px;top:384px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/print.png)"><label class="label"></label><div class="content" style="display:inline-block"><select id="printerLaser" ng-model="printerLaser" ng-options="item as item.name for item in printerLasers" ng-required tab-stop ng-change="selectPrinterLaser()"></select></div></div></div></div>
+
+</div><!-- tab1-->
+
+<div ng-show="currentTab==2">
+
+<div class="widget" style="left:0px;top:32px;width:400px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/staff_status.png)"><label class="label">ออกใบเสร็จ</label><div class="content"><input type="checkbox" ng-model="data.isReceipt" class="switch" id="isReceipt"/><label for="isReceipt">{{data.isReceipt?"ได้":"ไม่ได้"}}</label></div></div></div></div>
+
+<!--
+<div class="widget" style="left:0px;top:64px;width:400px;"><form-input type="text" model="data.startReceipt" icon="code" hint="ใบเสร็จเริ่มเลขที่" form-id="startReceipt" pattern="\d{2}-\d{2}.{2}-\d{6}" required></form-input></div>
+
+<div class="widget" style="left:0px;top:96px;width:400px;"><form-input type="text" model="data.codePrefix" icon="code" hint="รหัสเอกสาร" form-id="informPrefix"></form-input></div>
+-->
+<div class="widget" style="left:0px;top:64px;width:400px;">รหัสเอกสารเริ่มต้น</div>
+<div class="widget" style="left:0px;top:96px;width:400px;"><form-input type="text" model="data.receipt_code" icon="code" hint="ใบเสร็จ" pattern="\d{2}-\d{2}.{2}-\d{6}"></form-input></div>
+<div class="widget" style="left:0px;top:128px;width:400px;"><form-input type="text" model="data.inform_code" icon="code" hint="ใบแจ้ง" pattern="IF-\d{2}\w{2}-\d{6}(M|N|D)-\d{4}"></form-input></div>
+<div class="widget" style="left:0px;top:160px;width:400px;"><form-input type="text" model="data.coupon_voucher_code" icon="code" hint="ใบเติมคูปอง" pattern="CP-\d{2}\w{2}-\d{8}"></form-input></div>
+
+</div><!-- tab2 -->
+
+<div class="control">
+  <button tab-stop ng-click="saveConfig()" class="button save" ng-disabled="settingForm.$invalid">บันทึก</button>
+  <button tab-stop class="button reset" ng-click="resetConfig()" ng-disabled="isUnchanged(config)">ยกเลิก</button>
+</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

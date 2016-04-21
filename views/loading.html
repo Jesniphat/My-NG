@@ -1,0 +1,8 @@
+<link rel="stylesheet" href="css/loading.css"/>
+<div id="loading-page"><div>
+<img src="img/atta_logo.png" style="width:240px;"/>
+<div>{{msg}}</div>
+<div ng-show="terminal.uuid != ''">TERMINAL ID: {{terminal.uuid}}</div>
+<div ng-show="terminal.locked">THIS TERMINAL WAS LOCKED<br/>PLEASE CONTACT YOUR ADMIN</div>
+<div ui-view></div>
+</div></div><!--#loading-page-->

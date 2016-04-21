@@ -1,0 +1,54 @@
+<style>
+.table-list tbody td.name {
+	max-width:240px;
+	text-align:left;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>สมาชิก</li><li>ข้อมูลสมาชิก</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+
+<div class="wrapper" style="height:560px;overflow:auto">
+<table class="table-list">
+<thead>
+<tr>
+	<td colspan="7">
+		<a ui-sref="home.member_edit({uuid:'' ,page:numberOfPages() ,searchs:''})" class="icon member-new">&nbsp;</a>
+		<form-input type="text" model="keyword" hint="ค้นหา" pattern=".*" icon="search" change="doChange()"></form-input>
+		<button ng-disabled="currentPage == 1" ng-click="getPage(currentPage=currentPage-1)" class="icon prev">&nbsp;</button>
+		<input type="number" ng-model="currentPage" ng-change="getPage(currentPage)" style="width:3em;text-align:center;" min="1" max="{{numberOfPages()}}"> / {{numberOfPages()}}
+		<button ng-disabled="currentPage >= filtered.length/pageSize" ng-click="getPage(currentPage=currentPage+1)" class="icon next">&nbsp;</button>
+		<div style="float:right">
+		<input type="checkbox" ng-model="is_active" ng-true-value="YES" ng-false-value="NO" class="switch small" id="is_active" ng-change="refreshData()"><label for="is_active">{{is_active=='YES'?'สมาชิกปัจจุบัน':'หมดสมาชิกภาพ'}}</label>
+		</div>
+	</td>
+</tr>
+<tr class="header">
+	<th>ที่</th>
+	<th>รหัส</th>
+	<th>ชื่อสมาชิก</th>
+	<th>โทรศัพท์</th>
+	<th>อีเมล</th>
+	<th>ประเภท</th>
+	<th>คำสั่ง</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="member in filtered = (members | filter:keyword) | startFrom:(currentPage-1)*pageSize | limitTo:pageSize" class="table-row">
+	<td class="right">{{(currentPage-1)*pageSize + 1 + $index}}</td>
+	<td class="center">{{member.code}}</td>
+	<td class="name" title="{{member.name_th}}">{{member.name_th}}</td>
+	<td title="{{member.tel}}">{{member.tel}}</td>
+	<td title="{{member.email}}">{{member.email}}</td>
+	<td class="center">{{member.type=='VIP'?'กิติมศักดิ์':member.type=='ORDINARY'?'สามัญ':'สมทบ'}}</td>
+	<td><a ui-sref="home.member_edit({uuid:member.uuid ,page:member.page ,searchs:searchText})" class="icon small member-edit"></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="control"></div>
+</div><!--#body-->
+</div></div><!--#content-->

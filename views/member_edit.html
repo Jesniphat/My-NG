@@ -1,0 +1,154 @@
+<style>
+.datagrid.contact {
+	width:100%;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>สมาชิก</li><li><a ui-sref="home.member">ข้อมูลสมาชิก</a></li><li>จัดการข้อมูลสมาชิก</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="memberForm" novalidate>
+
+<div class="widget" style="left:0px;top:0px;width:400px;"><form-input type="text" model="member.code" hint="รหัสสมาชิก" readonly icon="code"></form-input></div>
+<div class="widget" style="left:0px;top:32px;width:400px;"><form-input type="text" model="member.name_th" required hint="ชื่อภาษาไทย" pattern=".{1,50}" autofocus icon="code"></form-input></div>
+<div class="widget" style="left:0px;top:64px;width:400px;"><form-input type="text" model="member.name_en" required hint="ชื่อภาษาอังกฤษ" pattern=".{1,50}"  icon="code"></form-input></div>
+<div class="widget" style="left:0px;top:96px;width:400px;height:32px;"></div>
+
+
+<div class="widget" style="left:416px;top:0px;width:400px;height:32px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สถานะ</label><div class="content"><input type="checkbox" ng-model="member.is_active" ng-true-value="YES" ng-false-value="NO" class="switch small" id="member_is_active"/><label for="member_is_active">{{member.is_active=='YES'?"สมาชิกปัจจุบัน":"หมดสมาชิกภาพ"}}</label></div></div></div></div>
+<div class="widget" style="left:416px;top:32px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ประเภทสมาชิก</label><div class="content"><select ng-model="member.type" ng-required ng-options="item.value as item.label for item in memberType"></select></div></div></div></div>
+<div class="widget" style="left:416px;top:64px;width:200px;"><form-input type="text" model="issueBy" hint="แก้ไขโดย" readonly icon="name"></form-input></div>
+<div class="widget" style="left:616px;top:64px;width:200px;"><form-input type="text" model="issueAt" hint="แก้ไขเมื่อ" readonly icon="datetime"></form-input></div>
+
+<div class="widget" style="left:0px;top:96px;width:912px;"><div class="tab"><span ng-click="switchTab(0)" ng-class="{'active':currentTab==0}">ทั่วไป</span><span ng-click="switchTab(1)" ng-class="{'active':currentTab==1}">ผู้ติดต่อ</span><span ng-click="switchTab(2)" ng-class="{'active':currentTab==2}">ที่อยู่</span><span ng-click="switchTab(3)" ng-class="{'active':currentTab==3}">อื่น ๆ</span></div></div>
+
+<div ng-show="currentTab==0">
+	<div class="widget" style="left:0px;top:128px;width:400px;"><form-input type="text" model="member.tel" hint="โทรศัพท์" icon="mobile"></form-input></div>
+	<div class="widget" style="left:0px;top:160px;width:400px;"><form-input type="text" model="member.fax" hint="โทรสาร"  icon="mobile"></form-input></div>
+	<div class="widget" style="left:0px;top:192px;width:400px;"><form-input type="text" model="member.website" hint="เว็บไซต์" icon="web" ></form-input></div>
+	<div class="widget" style="left:0px;top:224px;width:400px;height:64px;"><form-textarea model="member.email" hint="อีเมล" icon="email"></form-textarea></div>
+
+	<div class="widget" style="left:416px;top:128px;width:400px;"><form-input type="text" model="member.tat_id" hint="เลขที่ใบอนุญาต TAT" icon="code"></form-input></div>
+	<div class="widget" style="left:416px;top:160px;width:400px;"><form-input type="text" model="member.tax_id" hint="เลขประจำตัวผู้เสียภาษี" pattern="^[0-9]{10,13}$" icon="code" ></form-input></div>
+	<div class="widget" style="left:416px;top:192px;width:400px;"><form-input type="text" model="member.registrar_id" hint="เลขทะเบียนการค้า" pattern="^[0-9]{10,13}$" icon="code" ></form-input></div>
+	<div class="widget" style="left:416px;top:224px;width:400px;"><form-input type="text" model="member.capital" blur="comma()" hint="ทุนจดทะเบียน"  unit="บาท"  icon="money"></form-input></div>
+	<div class="widget" style="left:416px;top:256px;width:400px;"><form-input type="text" model="member.year_start" hint="ปีคศ.ที่เปิดดำเนินการ"  icon="code" ></form-input></div>
+	<div class="widget" style="left:416px;top:288px;width:400px;"><form-input type="date" model="member.start_date" hint="วันที่เริ่มสมาชิก" icon="datetime"></form-input></div>
+	<div class="widget" style="left:416px;top:320px;width:400px;"><form-input type="date" model="member.end_date" hint="วันที่หมดสภาพสมาชิก" icon="datetime"></form-input></div>
+	<div class="widget" style="left:416px;top:352px;width:400px;"><form-input type="date" model="member.end_date2" hint="วันที่หมดสภาพสมาชิกก่อนหน้า" icon="datetime" readonly></form-input></div>
+</div>
+<div ng-show="currentTab==1">
+	<div class="widget" style="left:0px;top:128px;width:400px;"><form-input type="text" model="contact.name_th" hint="ชื่อ (ไทย)" icon="name" form-id="contact_name_th"></form-input></div>
+	<div class="widget" style="left:0px;top:160px;width:400px;"><form-input type="text" model="contact.name_en" hint="ชื่อ (อังกฤษ)" icon="name"></form-input></div>
+	<div class="widget" style="left:416px;top:128px;width:400px;"><form-input type="text" model="contact.position" hint="ตำแหน่ง" icon="code"></form-input></div>
+	<div class="widget" style="left:416px;top:160px;width:400px;"><form-input type="text" model="contact.nation" hint="สัญชาติ" icon="nation" ng-keypress="showLovNation($event)" ng-class="{lov:true}"></form-input></div>
+  <button style="position:absolute;left:832px;top:128px;width:80px;" ng-click="saveContact()">ยืนยัน</button>
+  <button style="position:absolute;left:832px;top:160px;width:80px;" ng-click="cancelContact()">ยกเลิก</button>
+
+	<div class="widget" style="left:0px;top:192px;width:920px;height:320px;">
+<table class="table-list">
+<thead>
+	<tr><th>ที่</th><th>ชื่อ (ไทย)</th><th>ชื่อ (อังกฤษ)</th><th>ตำแหน่ง</th><th>สัญชาติ</th><th>คำสั่ง</th></tr>
+</thead>
+<tbody>
+<tr ng-repeat="contact in member.contacts">
+	<td>{{$index + 1}}</td>
+	<td>{{contact.name_th}}</td>
+	<td>{{contact.name_en}}</td>
+	<td>{{contact.position}}</td>
+	<td>{{contact.nation}}</td>
+	<td><button ng-click="editContact($index)">แก้ไข</button><button ng-click="removeContact($index)">ลบ</button></td>
+</tr>
+</tbody>
+</table>
+	</div>
+</div>
+<div ng-show="currentTab==2">
+
+	<div class="widget" style="left:0px;top:128px;width:200px;"><form-input type="text" model="address.code" hint="รหัสสาขา" icon="name" form-id="address_code"></form-input></div>
+	<div class="widget" style="left:200px;top:128px;width:200px;">
+		<div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label"></label><div class="content"><input type="checkbox" ng-model="address.lang" ng-true-value="TH" ng-false-value="EN" class="switch small" id="address_lang"/><label for="address_lang">{{address.lang=='TH'?"ไทย":"อังกฤษ"}}</label></div></div></div>
+	</div>
+	<div class="widget" style="left:0px;top:160px;width:400px;"><form-input type="text" model="address.name" hint="ชื่อ/สาขา" icon="name"></form-input></div>
+	<div class="widget" style="left:0px;top:192px;width:400px;"><form-input type="text" model="address.tel" hint="โทรศัพท์" icon="code"></form-input></div>
+	<div class="widget" style="left:0px;top:224px;width:400px;"><form-input type="text" model="address.fax" hint="โทรสาร" icon="code"></form-input></div>
+	<div class="widget" style="left:416px;top:128px;width:400px;"><form-input type="text" model="address.addr1" hint="ที่อยู่ 1" icon="address"></form-input></div>
+	<div class="widget" style="left:416px;top:160px;width:400px;"><form-input type="text" model="address.addr2" hint="ที่อยู่ 2" icon="address"></form-input></div>
+	<div class="widget" style="left:416px;top:192px;width:200px;"><form-input type="text" model="address.tambon" hint="ตำบล/แขวง" icon="code"></form-input></div>
+	<div class="widget" style="left:616px;top:192px;width:200px;"><form-input type="text" model="address.amphur" hint="อำเภอ" icon="code"></form-input></div>
+	<div class="widget" style="left:416px;top:224px;width:200px;"><form-input type="text" model="address.province" hint="จังหวัด" icon="code"></form-input></div>
+	<div class="widget" style="left:616px;top:224px;width:200px;"><form-input type="text" model="address.zipcode" hint="รหัสไปรษณีย์" icon="code"></form-input></div>
+
+	<div class="widget" style="left:832px;top:128px;width:200px;"><div class="input-wrap">
+		<input type="checkbox" ng-model="address.contactaddress_th" ng-true-value="Y" ng-false-value="N" id="langTh" ng-disabled="!dCheck()"><label for="langTh">ที่อยู่หลักภาษาไทย</label>
+	</div></div>
+	<div class="widget" style="left:832px;top:160px;width:200px;"><div class="input-wrap">
+		<input type="checkbox" ng-model="address.contactaddress_en" ng-true-value="Y" ng-false-value="N" id="langEn" ng-disabled="dCheck()"><label for="langEn">ที่อยู่หลักภาษาอังกฤษ</label>
+	</div></div>
+	<div class="widget" style="left:832px;top:192px;width:200px;"><div class="input-wrap">
+		<input type="checkbox" ng-model="address.invoice_addr" ng-true-value="Y" ng-false-value="N" id="invoice_addr"><label for="invoice_addr">ที่อยู่ออกใบแจ้งหนี้</label>
+	</div></div>
+	<button style="position:absolute;left:832px;top:224px;width:80px;" ng-click="saveAddress()">ยืนยัน</button>
+  	<button style="position:absolute;left:917px;top:224px;width:80px;" ng-click="cancelAddress()">ยกเลิก</button>
+
+	<div class="widget" style="left:0px;top:256px;width:920px;height:320px;">
+	<div style="width:100%;height:100%;overflow-y:auto;">
+<table class="table-list">
+<thead>
+	<tr><th>รหัสสาขา</th><th style="width:4em;">ภาษา</th><th>ชื่อ/สาขา</th><th>ที่อยู่</th><th>จังหวัด</th><th>โทรศัพท์/โทรสาร</th><th>คำสั่ง</th></tr>
+</thead>
+<tbody>
+<tr ng-repeat="address in member.addresses">
+<!--	<td>{{$index + 1}}</td>-->
+	<td>{{address.code}}</td>
+	<td>{{address.lang}}{{address.contactaddress_th=='Y'?'(T)':''}}{{address.contactaddress_en=='Y'?'(E)':''}}{{address.invoice_addr=='Y'?'(I)':''}}</td>
+	<td>{{address.name}}</td>
+	<td ng-bind-html="address.addr"></td>
+	<td>{{address.province}}</td>
+	<td>{{address.tel==''?'':'T:'+address.tel}}<br>{{address.fax==''?'':'F:'+address.fax}}</td>
+	<td><button ng-click="editAddress($index)">แก้ไข</button><button ng-click="removeAddress($index)">ลบ</button></td>
+</tr>
+</tbody>
+</table>
+	</div></div>
+</div>
+<div ng-show="currentTab==3">
+	<div class="widget" style="left:0px;top:128px;width:296px;height:32px;"><div class="text">Specialist</div></div>
+	<div class="widget" style="left:0px;top:160px;width:296px;height:264px;overflow-y:auto;">
+		<div ng-repeat="special in specialList" style="height:32px;"><input type="checkbox" ng-model="memberSpecialist[special.code]" class="small" id="chk_{{special.code}}"/><label for="chk_{{special.code}}">{{special.name}}</label></div>
+	</div>
+
+	<div class="widget" style="left:312px;top:128px;width:296px;height:32px;"><div class="text">INBOUND</div></div>
+	<div class="widget" style="left:312px;top:160px;width:296px;height:264px;overflow-y:auto;">
+		<div ng-repeat="market in marketList" style="height:32px;"><input type="checkbox" ng-model="memberInbound[market.code]" class="small" id="chk_in_{{market.code}}"/><label for="chk_in_{{market.code}}">{{market.name}}</label></div>
+	</div>
+
+	<div class="widget" style="left:616px;top:128px;width:296px;height:32px;"><div class="text">OUTBOUND</div></div>
+	<div class="widget" style="left:616px;top:160px;width:296px;height:264px;overflow-y:auto;">
+		<div ng-repeat="market in marketList" style="height:32px;"><input type="checkbox" ng-model="memberOutbound[market.code]" class="small" id="chk_out_{{market.code}}"/><label for="chk_out_{{market.code}}">{{market.name}}</label></div>
+	</div>
+	<div class="widget" style="left:0px;top:456px;width:296px;height:32px;overflow-y:auto;">
+		<input type="checkbox" ng-model="member.domestic" class="small" id="domestic"><label for="domestic">Domestic</label>
+	</div>
+</div>
+
+<div style="float:right; margin-right:295px;">
+	<button tab-stop ng-click="previousClick(member.code)" class="icon prevblack" ng-disabled="!nextAndPreviodsCheck()">&nbsp;</button>
+	<button tab-stop ng-click="nextClick(member.code)" class="icon nextblack" ng-disabled="!nextAndPreviodsCheck()">&nbsp;</button>
+</div>
+
+<div class="control">
+	<button tab-stop ng-click="saveMember(memberForm.$valid)" class="button save" ng-disabled="memberForm.$invalid || isUnchanged()">บันทึก</button>
+	<button tab-stop ng-click="resetMember()" class="button reset" ng-disabled="isUnchanged(member)">ยกเลิก</button>
+	<button tab-stop ng-click="goBack(page,searchText)"class="button back">ย้อนกลับ</button>
+<!-- <button tab-stop ng-click="jtest(memberForm.$valid)" class="button save" ng-disabled="memberForm.$invalid || isUnchanged()">test</button> -->
+	<div style="float:right">
+		<!-- <button tab-stop ng-click="previousClick(member.code)" class="icon prevblack" ng-disabled="!nextAndPreviodsCheck()">&nbsp;</button>
+		<button tab-stop ng-click="nextClick(member.code)" class="icon nextblack" ng-disabled="!nextAndPreviodsCheck()">&nbsp;</button> -->
+	</div>
+</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

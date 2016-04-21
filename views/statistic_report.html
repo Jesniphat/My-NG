@@ -1,0 +1,81 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>รายงาน</li><li>สถิติ</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="statisticReportForm" novalidate>
+<div class="widget" style="left:0px;top:0px;width:816px;">
+	<div class="tab">
+		<span ng-click="switchTab(0)" ng-class="{'active':currentTab==0}" ng-show="dmy_acl()">รายงานสถิติรายวัน</span>
+		<span ng-click="switchTab(1)" ng-class="{'active':currentTab==1}" ng-show="dmy_acl()">รายงานสถิติรายเดือน</span>
+		<span ng-click="switchTab(2)" ng-class="{'active':currentTab==2}" ng-show="dmy_acl()">รายงานสถิติรายปี</span>
+		<span ng-click="switchTab(3)" ng-class="{'active':currentTab==3}" ng-show="info_acl()">รายงาน info</span>
+		<span ng-click="switchTab(4)" ng-class="{'active':currentTab==4}" ng-show="sportCheck_acl()">รายงาน Spot Check</span>
+	</div>
+</div>
+
+<div ng-show="currentTab==0&&dmy_acl()">
+	<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">รายงาน</label><div class="content"><select id="typeReport" ng-model="typeReport" ng-options="item for item in typReportList" ng-required tab-stop></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/address.png)"><label class="label">สนามบิน</label><div class="content"><select id="Airport" ng-model="Airport" ng-options="item for item in AirportList" ng-required tab-stop></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:96px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ช่วงวัน</label><div class="content"><input type="date" ng-model="param0.date_from"> - <input type="date" ng-model="param0.date_to"></div></div></div></div>
+
+</div><!--tab0-->
+
+<div ng-show="currentTab==1&&dmy_acl()">
+	<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">รายงาน</label><div class="content"><select id="typeReportMonth" ng-model="typeReportMonth" ng-options="item for item in typReportMonthList" ng-required tab-stop></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/address.png)"><label class="label">สนามบิน</label><div class="content"><select id="Airport" ng-model="Airport" ng-options="item for item in AirportList" ng-required tab-stop></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:96px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ช่วงวัน</label><div class="content"><input type="date" ng-model="param1.date_from"> - <input type="date" ng-model="param1.date_to"></div></div></div></div>
+</div><!--tab1-->
+
+<div ng-show="currentTab==2&&dmy_acl()">
+<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">รายงาน</label><div class="content"><select id="typeReportYear" ng-model="typeReportYear" ng-options="item for item in typReportYearList" ng-required tab-stop></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/address.png)"><label class="label">สนามบิน</label><div class="content"><select id="AirportYear" ng-model="AirportYear" ng-options="item for item in AirportList" ng-required tab-stop></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ปี</label><div class="content"><select id="SearchYear" ng-model="SearchYear" ng-options="item as item.year for item in YearList" ng-required tab-stop ng-change="changeYear()"></select></div></div></div></div>
+</div><!--tab2-->
+
+<div ng-show="currentTab==3&&info_acl()">
+	<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/address.png)"><label class="label">สนามบิน</label><div class="content"><select id="Airport" ng-model="AirportInfo" ng-options="item for item in AirportListInfo" ng-required tab-stop></select></div></div></div></div>
+
+	<div class="widget" style="left:420px;top:64px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ช่วงวัน</label><div class="content"><input type="date" ng-model="param3.date_from"> - <input type="date" ng-model="param3.date_to"></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><form-input form-id="member" type="text" ng-keypress="showLovMemberInfo($event)" ng-class="{lov:true}" icon="member" model="param3.memberInfo" tab hint="สมาชิก" readonly></form-input></div>
+
+	<div class="widget" style="left:420px;top:96px;width:400px;height:32px;"><form-input form-id="nation" type="text" ng-keypress="showLovNationInfo($event)" ng-class="{lov:true}" icon="domestic" model="param3.nationInfo" readonly tab hint="สัญชาติ"></form-input></div>
+
+	<div class="widget" style="left:0px;top:128px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/arrival.png)"><label class="label">Flight</label><div class="content"><input type="text" ng-model="param3.flightInfo" name="param3.flightInfo" id="flightInfo" style="width:250px;" tab-stop ng-disabled="!paraHide()"></select></div></div></div></div>
+
+	<div class="widget" style="left:420px;top:128px;width:400px;height:32px;"><form-input form-id="hotel" type="text" ng-keypress="showLovHotelInfo($event)" disabled="!paraHide()" ng-class="{lov:true}" icon="address" model="param3.hotelInfo" hint="โรงแรม/ที่พัก" readonly tab></form-input></div>
+
+	<div class="widget" style="left:0px;top:160px;width:400px;height:32px;"><form-input form-id="guideNameInfor" type="text" ng-keypress="showLovTrasferInfo($event)" disabled="!paraHide()" ng-class="{lov:true}" icon="staff" model="param3.guideNameInfo" hint="Guide Name" readonly tab></form-input></div>
+
+	<div class="widget" style="left:420px;top:160px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/bus.png)"><label class="label">ทะเบียน</label><div class="content"><input type="text" ng-model="param3.licenseInfo" name="param3.licenseInfo" id="licenseInfo" style="width:200px;" ng-disabled="!paraHide()" tab-stop></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:192px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สถานะ</label><div class="content"><select id="param3.statusInfo" ng-model="param3.statusInfo" ng-options="item.value as item.label for item in infoStatus" ng-disabled="!paraHide()" tab-stop></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:32px;width:820px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label"></label><div class="content">
+		<input type="checkbox" ng-model="param3.checkInfo" ng-true-value="YES" ng-false-value="NO" id="param3_checkInfo" ng-change="changeChecker()"><label for="param3_checkInfo">แสดงจำนวน PAX (ยอดเติม PAX, ยอดแปลงคูปอง, ยอด PAX รวม)</label>
+	</div></div></div></div>
+
+</div><!--tab3-->
+
+<div ng-show="currentTab==4&&sportCheck_acl()">
+	<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/address.png)"><label class="label">สนามบิน</label><div class="content"><select id="Airport" ng-model="AirportSportCheck" ng-options="item for item in AirportList" ng-required tab-stop></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:64px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ช่วงวัน</label><div class="content"><input type="date" ng-model="param4.date_from"> - <input type="date" ng-model="param4.date_to"></div></div></div></div>
+	<div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/address.png)"><label class="label">ผลัด</label><div class="content"><select id="periodSportCheck" ng-model="periodSportCheck" ng-options="item.value as item.label for item in periodList" ng-required tab-stop></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:128px;width:400px;height:32px;"><form-input form-id="staff" type="text" ng-keypress="showStaff($event)" ng-class="{lov:true}" icon="staff" model="staffSportCheck" hint="ชื่อพนักงาน" readonly tab></form-input></div>
+</div>
+
+<div class="control">
+	<button tab-stop ng-click="doPreview()" class="button preview" ng-disabled="!canPreview()" ng-style="disablePButton">ดูก่อนพิมพ์</button>
+<div style="float:right">
+	<button tab-stop ng-click="doExportExcel()" class="button preview" ng-disabled="!canExport()" ng-style="disableEButton">Export Excel</button>
+</div>
+	<!--<button tab-stop ng-click="doPrint()" class="button print" ng-disable="!canPrint">พิมพ์</button>
+	<button tab-stop ng-click="doExport()" class="button save" ng-disable="!canExport">ยันทึกเป็น Word</button>-->
+</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->
+    <div id="exportable" style="display: none;">
+    </div>

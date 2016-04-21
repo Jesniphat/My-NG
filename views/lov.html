@@ -1,0 +1,42 @@
+<style>
+.table-list tr.hl td {
+  background-color:#fb3;
+}
+#panel {
+  height:480px;
+}
+#lov-keyword {
+  width: 280px;
+  top: 0px;
+  background-color: rgba(255,255,255,0.7);
+  background-image: none;
+  height: 26px;
+  line-height: 26px;
+  border: 0;
+  padding: 0;
+}
+</style>
+<div id="panel">
+
+<div class="wrapper" style="height:480px;overflow:auto">
+<table class="table-list scroll" style="width:100%">
+<thead>
+<tr>
+  <td colspan="{{displayFields.length + 1}}">
+    <div class="widget" style="width:400px;height:32px;position:relative;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/search.png)"><label class="label">ค้นหา</label><input type="text" id="lov-keyword" ng-model="keyword" hint="ค้นหา" autofocus ng-keydown="doKeyDown($event)"></div></div></div>
+  </td>
+</tr>
+<tr class="header">
+  <th>ที่</th>
+  <th ng-repeat="fld in displayFields">{{fld.text}}</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="item in filtered = (items | filter:keyword:startsWith) | limitTo:limit" class="table-row" ng-class="{'table-row':true,hl:$index==selectedIndex}" ng-click="rowClick(item, $index)" ng-dblclick="rowClick(item, $index, true)">
+  <td>{{$index + 1}}</td>
+  <td ng-repeat="fld in displayFields">{{item[fld.name]}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>

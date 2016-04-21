@@ -1,0 +1,84 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>รายงาน</li><li>ใบลงชื่อ</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="accountingReportForm" novalidate>
+<div class="widget" style="left:0px;top:0px;width:816px;">
+	<div class="tab">
+		<span ng-click="switchTab(0)" ng-class="{'active':currentTab==0}">ภาษีขาย</span>
+		<span ng-click="switchTab(1)" ng-class="{'active':currentTab==1}">การรับชำระ</span>
+		<span ng-click="switchTab(2)" ng-class="{'active':currentTab==2}">การค้างชำระ</span>
+		<span ng-click="switchTab(3)" ng-class="{'active':currentTab==3}" ng-show="period_report_acl()">รายงานปิดกะ</span>
+	</div>
+</div>
+
+<div ng-show="currentTab==0">
+	<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">สนามบิน</label><div class="content"><select id="airportbox" ng-model="airportbox" ng-options="item as item for item in airportList" ng-required tab-stop ng-change="getStation()"  ng-disabled = "validAirportList()"></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">เคาน์เตอร์</label><div class="content"><select id="param0_station" ng-model="param0_station_code" ng-options="item as item.code for item in stationList" ng-required tab-stop></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:96px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ช่วงวัน</label><div class="content"><input type="date" ng-model="param0.date_from"> - <input type="date" ng-model="param0.date_to"></div></div></div></div>
+</div><!--tab0-->
+
+<div ng-show="currentTab==1">
+	<div class="widget" style="left:0px;top:32px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ช่วงวัน</label><div class="content"><input type="date" ng-model="param0.date_from"> - <input type="date" ng-model="param0.date_to"></div></div></div></div>
+	
+	<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member.png)"><label class="label">เลขที่สมาชิก</label><input type="text" ng-model="selectedMemberPayment.code" name="member" id="member" style="width:100px;" tab-stop  ng-keypress="showLovMemberForPayment($event)"> - <input type="text" ng-model="selectedMemberPayment.codeTo" name="memberTo" id="memberTo" style="width:100px;" tab-stop ng-keypress="showLovMemberForPayment2($event)"></div></div></div>
+	<!-- <div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><form-input id="invoicecode" type="text" name="" icon="code" model="paymentProName"  tab-stop ng-class="{lov:true}"  ng-keypress="showLovProductForPayment($event)" hint="ชื่อสินค้า" ></form-input></div> -->
+
+	<div class="widget" style="left:0px;top:96px;width:296px;height:32px;"><div class="text">Product</div></div>
+	<div class="widget" style="left:0px;top:128px;width:700px;height:420px;overflow-y:auto;">
+		<div ng-repeat="product in productList" style="height:32px;"><input type="checkbox" ng-model="paymentProduct[product.code]" class="small" id="chk_{{product.code}}"/><label for="chk_{{product.code}}">{{product.codeName}}</label></div>
+	</div>
+
+</div><!--tab1-->
+
+<div ng-show="currentTab==2">
+	<div class="widget" style="left:0px;top:32px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ช่วงวัน</label><div class="content"><input type="date" ng-model="param0.date_from"> - <input type="date" ng-model="param0.date_to"></div></div></div></div>
+	<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member.png)"><label class="label">เลขที่สมาชิก</label><input type="text" ng-model="selectedMemberAarrearage.code" name="member2" id="member2" style="width:100px;" tab-stop  ng-keypress="showLovMemberArrearage($event)"> - <input type="text" ng-model="selectedMemberAarrearage.codeTo" name="memberTo2" id="memberTo2" style="width:100px;" tab-stop ng-keypress="showLovMemberArrearage2($event)"></div></div></div>
+	<div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><form-input id="invoicecode2" type="text" name="" icon="code" model="aarrearageProName"  tab-stop ng-class="{lov:true}"  ng-keypress="showLovProductArrearage($event)" hint="ชื่อสินค้า" ></form-input></div>
+</div><!--tab2-->
+
+<div ng-show="currentTab==3">
+	<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">สนามบิน</label><div class="content"><select id="airportbox" ng-model="airportbox" ng-options="item as item for item in airportList" ng-required tab-stop ng-change="getStation()"  ng-disabled = "validAirportList()"></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">เคาน์เตอร์</label><div class="content"><select id="param3_station" ng-model="param3_station" ng-options="item as item.code for item in stationList" ng-required tab-stop ng-change="period3_changeStation()"></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">วันที่</label><div ng-model="divDate" ng-show="divRv"><input type="date" ng-model="param3.periodDate" tab-stop autofocus></div>
+	<div ng-model="divDateRVSum" ng-show="divRvSum"><div class="content"><input type="date" ng-model="param3.periodDateFrom" tab-stop autofocus > -
+	<input type="date" ng-model="param3.periodDateTo" tab-stop autofocus></div>
+	</div>
+	</div></div></div>
+
+	<!-- <div class="widget" style="left:0px;top:128px;width:400px;height:32px;" ng-show="divPeriod"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ผลัด</label><div class="content">
+		<input type="radio" class="small" ng-model="param3.periodType" value="AM" name="param3_periodType" id="param3_periodType_AM" ng-hide="periodType=='DAY'"><label for="param3_periodType_AM" ng-hide="param3_station.period_type=='DAY'">กลางวัน</label>
+		<input type="radio" ng-model="param3.periodType" value="PM" name="param3_periodType" id="param3_periodType_PM" class="small" ng-hide="periodType=='DAY'"><label for="param3_periodType_PM" ng-hide="param3_station.period_type=='DAY'">กลางคืน</label>
+		<input type="radio" ng-model="param3.periodType" value="DAY" name="param3_periodType" id="periodType_DAY" class="small" ng-hide="periodType!='DAY'"><label for="periodType_DAY" ng-hide="param3_station.period_type!='DAY'">ตลอดวัน</label></div></div></div></div> -->
+
+	<div class="widget" style="left:0px;top:128px;width:400px;height:32px;" ng-show="divPeriod"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">ผลัด</label><div class="content">
+		 <input type="radio" class="small" ng-model="param3.periodType" value="AM" name="periodType" id="periodType_AM" ng-hide="periodType=='DAY'"  ng-disabled = "isHide()"><label for="periodType_AM" ng-hide="periodType=='DAY'">กลางวัน</label>
+         <input type="radio" class="small" ng-model="param3.periodType" value="PM" name="periodType" id="periodType_PM" ng-hide="periodType=='DAY'"  ng-disabled = "isHide()"><label for="periodType_PM" ng-hide="periodType=='DAY'">กลางคืน</label>
+         <input type="radio" class="small" ng-model="param3.periodType" value="All" name="periodType" id="periodType_ALL" ng-hide="periodType=='DAY'"  ng-disabled = "isHideAllRedio()"><label for="periodType_ALL" ng-hide="periodType=='DAY'">ทั้งหมด</label>
+         <input type="radio" class="small" ng-model="param3.periodType" value="DAY" name="periodType" id="periodType_DAY" ng-hide="periodType!='DAY'" ng-disabled = "isHide()"><label for="periodType_DAY" ng-hide="periodType!='DAY'">ตลอดวัน</label>
+         </div></div></div></div>
+
+	<div class="widget" style="left:0px;top:160px;width:400px;height:180px">
+		<div class="input-wrap">
+			<div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="receipt_summary" ng-model="param3.report" value="receipt_summary" ng-click="doClickRadio()"> <label for="receipt_summary">รายงานยอดเงินรับ</label></div>
+			<div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="receive_voucher" ng-model="param3.report" value="receive_voucher" ng-click="doClickRadio()"> <label for="receive_voucher">รายงานใบสำคัญรับ (RV)</label></div>
+			<div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="receive_voucher_tax" ng-model="param3.report" value="receive_voucher_tax" ng-click="doClickRadioRVSum()"> <label for="receive_voucher_tax">รายงานใบสำคัญรับ (RV รวม)</label></div>
+			<div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="receipt_list" ng-model="param3.report" value="receipt_list1" ng-click="doClickRadio()"> <label for="receipt_list">รายการใบเสร็จรับเงิน</label></div>
+			<div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="inform_list" ng-model="param3.report" value="inform_list1" ng-click="doClickRadio()"> <label for="inform_list">รายการใบแจ้ง</label></div>
+			<div class="input-custom" style="background-image:url(img/icon/report.png)"><input type="radio" id="coupon_list" ng-model="param3.report" value="coupon_list" ng-click="doClickRadio()"> <label for="coupon_list">รายการการเติมคูปอง</label></div>
+		</div>
+	</div>
+</div><!--tab3-->
+
+<div class="control">
+	<button tab-stop ng-click="doPreview()" class="button preview" ng-disabled="!isValid()">ดูก่อนพิมพ์</button>
+	<button tab-stop ng-click="doPrint()" class="button print" ng-disabled="!isValid()">พิมพ์</button>
+	<button tab-stop ng-click="doExport()" class="button save" ng-disabled="!isValid()">ยันทึกเป็น Word</button>
+</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

@@ -1,0 +1,16 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>ตั้งค่า</li><li>จัดการเซิร์ฟเวอร์</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="settingForm">
+
+<div class="widget" style="left:0px;top:0px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">Web Service</label><div class="content"><select id="webService" ng-model="webService" ng-options="item as item.name for item in webServiceList" ng-required tab-stop></select></div></div></div></div>
+
+<div class="control">
+  <button tab-stop ng-click="saveConfig()" class="button save" ng-disabled="settingForm.$invalid">บันทึก</button>
+</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

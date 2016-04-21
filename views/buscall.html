@@ -1,0 +1,163 @@
+<style>
+button{
+  cursor: pointer;
+}
+.table-list{
+}
+.table-list tbody td {
+  text-align:center;
+}
+.table-list tbody td.name {
+  max-width:240px;
+  text-align:left;
+}
+.name_landing{
+    color: #5ebb48;
+}
+
+.landing-status {
+    background:url(img/icon/landing.png) center center no-repeat;
+    width:40px;
+}
+.landing-status.landed {
+  background-color:rgba(224,255,224,1.0);
+}
+.landing-status.notlanded{
+  opacity:0.1;
+}
+.landing-status.cancelled {
+  background-color:rgba(255,224,224,0.5);
+  opacity:0.1;
+}
+.park-status {
+  background:url(img/icon/bus_park.png) center center no-repeat;
+  width:40px;
+}
+.park-status.park{
+}
+.park-status.notpark{
+  opacity:0.1;
+}
+.print {
+  border-radius:4px;
+  height:40px;
+}
+.print[disabled] {
+    opacity:0.1;
+}
+.print div {
+  background: url(img/icon/printer.png) center 0 no-repeat;
+  width:40px;
+  height:40px;
+}
+
+.tr-head{
+  height: 30px;
+  background-color: #57585a;
+  color:#fff;
+  text-align:center;
+}
+
+
+#callList .waiting {
+  background-color:#fff;
+}
+#callList .landing {
+  background-color:#09c;
+}
+#callList .ready {
+  background-color:#f80;
+}
+#callList .callReady {
+  background-color:#fc0;
+}
+#callList .called {
+  color:#fff;
+  background-color:#f44;
+}
+.callButton {
+  border-radius:4px;
+  min-width: 80px;
+  height:40px;
+}
+.timer {
+  color: red;
+  font-size:10pt;
+  line-height:14px;
+}
+.numcall {
+  font-weight:bold;
+  font-size:16pt;
+  line-height:18px;
+  color:blue;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>รถ</li><li>ข้อมูลเรียกรถ</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<timer></timer>
+<div class="wrapper" style="height:560px;overflow:auto">
+<table id="callList" class="table-list">
+<thead>
+<tr>
+<td colspan="14">
+    <select id="filter" ng-model="filter" ng-options="item as item.name for item in filterList" ng-change="refreshCallList()" ng-required></select>
+    <input type="text" ng-model="keyword" placeholder="ค้นหา"/>
+    <div style="float:right;" ng-hide="location!='PARKING'">
+      <input type="checkbox" ng-model="playAlarm" class="switch small" id="playAlarm" ng-change="updatePlayAlarm()" ><label for="playAlarm">{{playAlarm?'เปิดเสียงเตือน':'ปิดเสียงเตือน'}}</label>
+      <input type="checkbox" ng-model="playAudio" class="switch small" id="playAudio" ng-change="updatePlayAudio()" ><label for="playAudio">{{playAudio?'เปิดเสียงเรียกรถ':'ปิดเสียงเรียกรถ'}}</label>
+    </div>
+</td>
+</tr>
+<tr class="header">
+    <th style="width:2em">#</th>
+    <th style="width:6em">เที่ยวบิน</th>
+    <th style="width:10em">เวลา</th>
+    <th>บริษัท</th>
+    <th style="width:2em">D/I</th>
+    <th style="width:3em">PAX</th>
+    <th style="width:3em">ลงจอด</th>
+    <th style="width:3em">รถ</th>
+    <th style="width:3em">พร้อม</th>
+    <th style="width:3em">เรียก</th>
+    <th style="width:5em">ปล่อย</th>
+    <th style="width:6em">เรียกรถ</th>
+    <th style="width:5em">ทะเบียน</th>
+    <th style="width:6em">พิมพ์</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="item in callList | filter:keyword | limitTo:pageSize track by $index" ng-class="item.className">
+<!--<tr ng-repeat="item in items" >-->
+    <td title="{{item.inform_code}}">{{$index+1}}</td>
+    <td>{{item.flight}}</td>
+    <td title="{{item.flight_landing|toDate|date:'ddMMMyy HH:mm:ss'|uppercase}}">
+        {{item.flight_time}}
+    </td>
+    <td class="name">{{item.name}}</td>
+    <td title="{{item.is_domestic=='YES'?'Domestic':'International'}}">{{item.is_domestic=='YES'?'D':'I'}}</td>
+    <td>{{item.pax}}</td>
+    <td ng-class="{'landing-status':true,'landed':item.is_landing=='YES','notlanded':item.is_landing=='NO'}"></td>
+    <td ng-class="{'park-status':true,'park':item.park_status==1,'notpark':item.park_status==0}"></td>
+    <td title="{{item.ready_time|toDate|date:'ddMMMyy HH:mm:ss'|uppercase}}">{{item.ready_time=='0000-00-00 00:00:00' ? '-' : item.ready_time.substr(11,5)}}</td>
+    <td title="{{item.call_time|toDate|date:'ddMMMyy HH:mm:ss'|uppercase}}">{{item.call_time=='0000-00-00 00:00:00' ? '-' : item.call_time.substr(11,5)}}</td>
+    <td title="{{item.done_time|toDate|date:'ddMMMyy HH:mm:ss'|uppercase}}">{{item.done_time=='0000-00-00 00:00:00' ? '-' : item.done_time.substr(11,5)}}{{filter.type=='DONE' ? '('+item.num_call+')' : ''}}</td>
+    <td >
+        <button class="callButton" ng-click="callClick(item)" ng-disabled="(location=='OFFICE' &amp;&amp; filter.type=='TERMINAL')"><span ng-bind-html="item.buttonText"></span><div class="timer" ns-counter="item.call_time" ng-show="item.status=='CALL' &amp;&amp; item.num_call &gt; 0"></div></button>
+    </td>
+    <td>
+    	<a ui-sref="home.inform_edit({code:item.inform_code})"><button class="callButton">{{item.license}}</button></a>
+    </td>
+    <td>
+        <button ng-click="printClick(item)" class="print" ng-disabled="location=='OFFICE'"><div></div></button>
+    </td>
+</tr>
+</tbody>
+</table>
+</div><!--.wrapper-->
+<div class="control"></div>
+</div><!--#body-->
+</div></div><!--#content-->

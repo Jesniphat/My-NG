@@ -1,0 +1,72 @@
+<style>
+.prod-code {
+  width:8em;
+}
+.prod-name {
+  max-width:240px;
+}
+.qty {
+  width:4em;
+  text-align:right;
+}
+.table-list input {
+  border:1px solid #666;
+  border-radius:4px;
+  height:24px;
+  margin:1px;
+  line-height:24px;
+}
+.table-list input[type=text] {
+  padding:0 4px;
+}
+.table-list input[readonly]:focus {
+  outline:1px solid #fb3;
+  outline-offset:0px;
+}
+.cancelled {
+  position:absolute;
+  left:200px;
+  top:200px;
+  width:400px;
+  font-size:36pt;
+  border:3px double rgba(255,0,0,0.7);
+  color:rgba(255,0,0,0.7);
+  text-align:center;
+  -webkit-transform:rotate(15deg);
+  z-index:1000;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>ใบแจ้งหนี้</li><li>กำหนดชำระ</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+
+<form name="informForm">
+
+<div class="widget" style="left:0px;top:0px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">เลขใบแจ้งหนี้</label><input type="text" ng-model="invoice.code" name="invoicecode" id="invoicecode" style="width:100px;" tab-stop  ng-keypress="showLovInvoice($event)"> - <input type="text" ng-model="invoice.codeTo" name="invoicecodeto" id="invoicecodeto" style="width:100px;" tab-stop ng-keypress="showLovInvoice2($event)"></div></div></div>
+
+<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member.png)"><label class="label">เลขที่สมาชิก</label><input type="text" ng-model="selectedMember.code" name="member" id="member" style="width:100px;" tab-stop  ng-keypress="showLovMember($event)"> - <input type="text" ng-model="selectedMember.codeTo" name="memberTo" id="memberTo" style="width:100px;" tab-stop ng-keypress="showLovMember2($event)"></div></div></div>
+
+<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">รหัสสินค้า</label><input type="text" ng-model="invoice.prod_code" name="productcode" id="productcode" style="width:100px;" tab-stop  ng-keypress="showLovProduct($event)"></div></div></div>
+
+<div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">วันที่ Reissue</label><input id="reissue_date"  type="date" ng-model="invoice.reissue_date" tab-stop /></div></div></div>
+
+<div class="widget" style="left:0px;top:128px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">กำหนดชำระ</label><input id="deadline_date"  type="date" ng-model="invoice.deadline_date" tab-stop /></div></div></div>
+
+<div class="widget" style="left:0px;top:160px;width:400px;height:96px;"><form-textarea id="remark" model="invoice.remark" icon="code" hint="" ></form-textarea></div>
+
+<div class="control">
+  <button id="save" tab-stop ng-click="ConfrimSave('save')" class="button save" ng-disabled="!isValid()">ออกใบแจ้งหนี้อีกครั้ง</button>
+  <button id="reset" tab-stop ng-click="reset()" class="button reset">เริ่มใหม่</button>
+  <div style="float:right">
+  <button id="print" tab-stop ng-click="ConfrimSave('print')" class="button print" ng-disabled="!isValidPrint()">พิมพ์ใบแจ้งหนี้</button>
+  </div>
+</div>
+
+</form>
+
+</div><!--#body-->
+
+</div></div><!--#content-->

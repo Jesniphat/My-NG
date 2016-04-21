@@ -1,0 +1,53 @@
+<style>
+.balance {
+	font-size:36pt;
+	color:#09c;
+	text-align:center;
+	background-color:rgba(51,181,229, 0.1);
+	margin:1px;
+	border-radius:8px;
+	height:78px;
+	line-height:78px;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>บัตร</li><li>ออกบัตรใหม่</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body"><div class="body-wrap">
+<form name="cardIssueForm" novalidate>
+
+<div style="position:absolute;left:0px;top:12px;width:400px;height:256px;"><atta-card></atta-card></div>
+
+<div class="widget" style="left:0px;top:288px;width:400px;height:32px;"><form-input form-id="cardAccount" type="text" ng-keypress="showLovCardAccount($event)" ng-class="{lov:true}" icon="card" model="selectedCardAccount" tab hint="บัญชีบัตร" autofocus required readonly disabled="cardIssue.carddb.type==''"></form-input></div>
+
+<div class="widget" style="left:0px;top:320px;width:400px;"><form-input type="text" model="cardIssue.holderName" icon="card" required hint="ผู้ถือบัตร" form-id="cardHolder"></form-input></div>
+<!-- <div class="widget" style="left:0px;top:352px;width:400px;"><div class="text">วงเงินคงเหลือ (สำหรับสมาชิก) </div></div>
+<div class="widget" style="left:0px;top:384px;width:400px;"><div class="balance">{{cardIssue.cardAccount.balance |number:2}}</div></div>
+ -->
+<!-- COLUMN2 -->
+<div class="widget" style="left:416px;top:0px;width:400px;"><form-input type="text" model="cardIssue.receiptCode" icon="code" hint="เลขที่ใบเสร็จ" readonly></form-input></div>
+
+<div class="widget" style="left:416px;top:32px;width:400px;height:32px;"><form-input form-id="member" type="text" ng-keypress="showLovMember($event)" ng-class="{lov:true}" icon="card" model="selectedMember" tab hint="สมาชิก" required readonly></form-input></div>
+
+<div class="widget" style="left:416px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/address.png)"><label class="label">ที่อยู่ออกใบเสร็จ</label><div class="content"><select id="corp_addr" ng-model="memberAddress" ng-options="item as item.name+' ['+item.code+']' for item in memberAddresses" ng-change="changeAddress()" ng-required tab-stop></select></div></div></div></div>
+
+<div class="widget" style="left:416px;top:96px;width:400px;height:64px;"><form-textarea model="memberAddress.addr" icon="address" hint="ที่อยู่" readonly required tab-stop></form-textarea></div>
+
+<div class="widget" style="left:416px;top:160px;width:400px;"><form-input type="number" money model="cardIssue.billTotal" ng-class="{money:true}" required icon="money" hint="รวมทั้งสิ้น" unit="บาท" readonly></form-input></div>
+<div class="widget" style="left:416px;top:192px;width:400px;"><form-input type="number" money model="cardIssue.billAmount" required icon="money" hint="จำนวนเงินก่อน VAT" unit="บาท" readonly></form-input></div>
+<div class="widget" style="left:416px;top:224px;width:400px;"><form-input type="number" money model="cardIssue.vatAmount" required icon="money" hint="ภาษีมูลค่าเพิ่ม {{cardIssue.vatRate}}%" unit="บาท" readonly></form-input></div>
+<div class="widget" style="left:416px;top:288px;width:400px;"><form-input type="text" id="cardNumText" model="cardIssue.cardNumText" required icon="card" pattern="(\w{4})\-(\w{4})\-(\w{4})\-(\w{4})" hint="เลขที่บัตร" tab-stop></form-input></div>
+<p class="widget" style="left:416px;top:320px;width:400px;height:28px;font-size:14px;margin-top:2px">ตัวอย่าง xxxx-xxxx-xxxx-xxxx</p>
+
+
+<div class="control">
+	<button tab-stop ng-click="save()" class="button save" ng-disabled="cardIssueForm.$invalid">บันทึกรายการ/พิมพ์</button>
+	<!-- <button tab-stop ng-click="test()" class="button save">บัน</button> -->
+	<!--<button tab-stop ng-click="printReceipt()" class="button print" ng-disabled="!!(cardIssue.receipt.code)==false">พิมพ์ใบเสร็จรับเงิน</button>-->
+	<button tab-stop ng-click="reset()" class="button reset">เริ่มใหม่</button>
+</div>
+</form>
+</div></div><!--#body-->
+</div></div><!--#content-->

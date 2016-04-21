@@ -1,0 +1,27 @@
+{
+   "app": {
+      "background": {
+         "scripts": [ "js/nfc-full.js", "js/nfc-reader.js", "js/jquery-1.11.1.min.js", "js/background.js" ]
+      }
+   },
+   "description": "ATTA Card RapidPass by Nippon Sysits",
+   "icons": {
+      "128": "img/atta-128.png",
+      "16": "img/atta-16.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArdui+5IURCpRaErRf6LZqBshg7J0+TyhJep86m53078BBpFOsCskxzqCNTJ5OFYYccWa423Hi2rLfujcFsWMIxENb46BjPrML/CyRAQmcnmGXwio8X6RzYqelBU1OOZxcMzdgMfPVxabohFCkmuHbFk3VjdiHQm6KxrM8TztTWkm2/cFwrSiRRGllNbN9dTtX6y6NEKOc9ig5S9P7u1yGxF+ylpdHSDGn+NOy6syX+21o0BPCJAjESP17lK5R1GMJXQr8scWqTMHu1QXRp6+Yw7IrY3J9DcjoB52UHdadzobmck2wIYutKw8HW9rI5iFZ0swNLMRuhbjQY8syhnzXQIDAQAB",
+   "manifest_version": 2,
+   "minimum_chrome_version": "24.0.1307.0",
+   "name": "ATTA Card RapidPass",
+   "permissions": [ "webview", "storage", "tts", "system.storage", "unlimitedStorage", "notifications", "http://*/*", "https://*/*", "*://*/*", "usb", {
+      "usbDevices": [ {
+         "productId": 21905,
+         "vendorId": 1254
+      }, {
+         "productId": 8704,
+         "vendorId": 1839
+      } ]
+   } ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "0.3.00"
+}

@@ -1,0 +1,21 @@
+<link rel="stylesheet" href="css/home.css"/>
+<div id="wrap" ng-controller="HomeCtrl" ng-click="homeClick()">
+<img id="logo" src="img/atta-128.png"/>
+<button ng-repeat-start="menu in mainmenu" id="menu_{{menu.code}}" class="menu" ng-click="menuClick(menu.code, $event)" ng-class="menuClass(menu.code)">
+	<img ng-src="img/icon/menu/{{menu.code}}.png"/>
+	<div>{{menu.title}}</div>
+</button>
+<div ng-repeat-end id="submenu_{{menu.code}}" class="submenu" ng-show="shouldShowSubmenu(menu.code)">
+	<button ng-repeat="submenu in menu.submenu" class="menu" ng-click="gotoMenu(menu, submenu)" ng-show="submenu.ok"><img ng-src="img/icon/menu/{{submenu.code}}.png"/><div>{{submenu.title}}</div></button>
+</div>
+<button id="menu_admin" class="menu small circle" style="opacity:0.1" ng-click="gotoMenu('', {sref:'home.control_panel'})"><img src="img/icon/menu/admin.png"/></button>
+<button id="menu_inform" class="menu small circle" ng-disabled="!menuInform" title="รับแจ้ง" ng-click="gotoMenu('', {sref:'home.inform'})"><img src="img/icon/inform.png"/></button>
+<button id="menu_member" class="menu small circle" ng-disabled="!menuMember" title="สมาชิก" ng-click="gotoMenu('', {sref:'home.member'})"><img src="img/icon/menu/member.png"/></button>
+<button id="menu_freelance" class="menu small circle" ng-disabled="!menuFreelance" title="ฟรีแลนซ์" ng-click="gotoMenu('', {sref:'home.freelance'})"><img src="img/icon/menu/freelance.png"/></button>
+<div ui-view class="view-frame"></div>
+<div id="powered">Powered by <a href="http://www.ns.co.th/" target="_blank">Nippon Sysits</a> {{version}} <span ng-show="hasUpdate" class="update" ng-click="updateProgram()">อัพเดทโปรแกรม</span></div>
+<div id="txt_login" title="{{txtPeriod}}"><span style="color:red">{{txtMode}}</span> {{txtUser}}</div>
+<button id="menu_signout" class="menu"><img src="img/icon/signout.png" valign="middle" ng-click="signout()"/> ออก</button>
+<audio id="audio1"></audio>
+<audio id="audio2"></audio>
+</div>

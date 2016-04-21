@@ -1,0 +1,66 @@
+<style>
+.rv-date {
+  color:blue;
+}
+.rv-site {
+  color:red;
+}
+.status-wait {
+  color:red;
+}
+.status-post {
+  color:green;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>บัญชี</li><li>ส่งข้อมูลเข้าระบบบัญชี</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<table id="callList" class="table-list">
+<thead>
+<tr>
+  <td colspan="10">
+      <input type="text" ng-model="keyword" placeholder="ค้นหา"/>
+  <!--     <div style="float:right;">
+        <input type="checkbox" ng-model="onlyPostable" class="switch small" id="onlyPostable"><label for="onlyPostable">{{onlyPostable?'เฉพาะที่ยังไม่ส่งข้อมูล':'ทั้งหมด'}}</label>
+      </div>
+   -->
+  </td>
+</tr>
+<tr class="tr-head">
+    <th>#</th>
+    <th>RV</th>
+    <th>เคาน์เตอร์</th>
+    <th>วันที่</th>
+    <!-- <th>ผลัด</th> -->
+    <th style="width:260px">เลขที่ใบเสร็จ</th>
+    <th>จำนวนใบเสร็จ</th>
+    <th>ยอดเงิน</th>
+    <th>สถานะ</th>
+    <th>คำสั่ง</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="item in rvList | filter:keyword | limitTo:pageSize track by $index" ng-class="item.className">
+<!--<tr ng-repeat="item in items" >-->
+    <td>{{$index+1}}</td>
+    <td>RV<span class="rv-date">{{item.code.substr(4,6)}}</span><span class="rv-site">{{item.code.substr(2,2)}}</span><span class="rv-site">{{item.code.substr(0,2)}}</span><span class="rv-period">{{item.code.substr(10,1)}}</span></td>
+    <td>{{item.station_code2}}</td>
+    <td>{{item.p_date | toDate | date:"ddMMMyy" | uppercase}}</td>
+    <!-- <td>{{item.p_type=='AM'?'กลางวัน':item.p_type=='PM'?'กลางคืน':'ตลอดวัน'}}</td> -->
+    <td>{{item.receipt_from + ' - ' + item.receipt_to}}</td>
+    <td class="right">{{item.receipt_count}}</td>
+    <td class="right">{{item.receipt_amount | number:2}}</td>
+    <td ng-class="{center:true,'status-post':item.is_post=='YES','status-wait':item.is_post=='NO'}">{{item.is_post=='NO' ? 'รอส่ง' : 'ส่งแล้ว'}}</td>
+    <td >
+        <button ng-click="viewClick(item)">ดูรายงาน</button>
+        <button ng-click="postClick(item)" ng-disabled="item.is_post=='YES'">ส่งข้อมูล</button>
+    </td>
+</tr>
+</tbody>
+</table>
+<div class="control"></div>
+</div><!--#body-->
+</div></div><!--#content-->

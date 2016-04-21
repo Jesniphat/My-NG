@@ -1,0 +1,64 @@
+<style>
+.input.coupon {
+	width:120px;
+	top:2px;
+	text-align:center;
+	background-color:rgba(255,255,255,0.7);
+	background-image:none;
+	height:28px;
+	line-height:28px;
+	border:0;
+	padding:0;
+	text-transform: uppercase;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>บัตร</li><li>เติมเงินด้วยคูปอง</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body"><div class="body-wrap">
+
+<form name="cardCouponForm" novalidate>
+
+<div style="position:absolute;left:0px;top:12px;width:400px;height:256px;"><atta-card></atta-card></div>
+
+<div class="widget" style="left:0px;top:288px;width:400px;"><form-input type="number" money model="cardCoupon.paxBefore" required hint="PAX ก่อนเติม" unit="PAX" readonly icon="money"></form-input></div>
+<div class="widget" style="left:0px;top:320px;width:400px;"><form-input type="number" money model="totalPax" required hint="จำนวน PAX" unit="PAX"  icon="money" readonly></form-input></div>
+<div class="widget" style="left:0px;top:352px;width:400px;"><form-input type="number" money model="cardCoupon.paxAfter" required hint="PAX หลังเติม" unit="PAX" readonly icon="money"></form-input></div>
+
+<div class="widget" style="left:416px;top:0px;width:400px;"><form-input type="text" model="cardCoupon.voucherCode" hint="เลขที่ใบบันทึกรายการ" readonly icon="code"></form-input></div>
+
+<div class="widget" style="left:416px;top:32px;width:400px;height:40px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/coupon.png)"><input type="text" ng-model="couponFrom" name="couponFrom" id="couponFrom" class="input coupon" ng-pattern="/^(.{4}\/)?.{1,2}[0-9]{5,6}$/" placeholder="รหัสคูปอง" tab-stop autofocus ng-keydown="checkEnter($event)"> - <input type="text" ng-model="couponTo" name="couponTo" id="couponTo" class="input coupon" ng-pattern="/^(.{4}\/)?.{1,2}[0-9]{5,6}$/" placeholder="รหัสคูปอง" tab-stop upper ng-keydown="checkEnter($event)"><button class="icon add" tab-stop ng-click="addCoupon(cardCouponForm)">&nbsp;</button></div></div></div>
+
+<div class="widget" style="left:416px;top:64px;width:400px;height:400px;">
+<table class="table-list">
+<thead>
+<tr>
+	<th>ที่</th>
+	<th>คูปองเลขที่</th>
+	<th>จำนวน</th>
+	<th>&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="coupon in cardCoupon.coupon">
+	<td>{{$index+1}}</td>
+	<td>{{coupon.from + ' - ' + coupon.to}}</td>
+	<td class="center">{{coupon.qty}}</td>
+	<td><a href="#" class="icon small remove" ng-click="removeCoupon($event, $index)">&nbsp;</a></td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+	<td colspan="2">&nbsp;</td>
+	<td class="center">{{totalPax}}</td>
+</tr>
+</tfoot>
+</table>
+</div>
+
+<div class="control"><button id="save" tab-stop ng-click="save()" class="button save" ng-disabled="!isValid(cardCouponForm)">บันทึกรายการ</button><button id="reset" tab-stop ng-click="reset()" class="button reset">เริ่มใหม่</button></div>
+</form>
+</div></div><!--#body-->
+</div></div><!--#content-->

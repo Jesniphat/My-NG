@@ -1,0 +1,8 @@
+.ngdialog.ngdialog-theme-lov {
+  padding-bottom: 60px;
+  padding-top: 60px;
+}
+
+.ngdialog.ngdialog-theme-lov .ngdialog-content {
+  width: 800px;
+}

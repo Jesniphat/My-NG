@@ -1,0 +1,38 @@
+<style>
+.sync-table tbody td {
+  line-height:2em;
+}
+.green {
+  color:green;
+  background-color:#efe;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>ONLINE</li><li>เปิดออนไลน์</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body"><div class="body-wrap">
+  <h1>ข้อมูลรอการ Sync</h1>
+  <table class="table-list sync-table">
+  <thead>
+    <tr>
+      <th style="width:40px">NO</th>
+      <th>DATA</th>
+      <th style="width:160px">Synced/Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="item in syncList track by $index" ng-class="{green:item.cnt==item.total}">
+      <td style="text-align:right">{{$index + 1}}</td>
+      <td>{{item.table_name}}</td>
+      <td style="text-align:center">{{item.cnt}} / {{item.total}}</td>
+    </tr>
+  </tbody>
+
+  <div class="control">
+    <button tab-stop ng-click="goOnline()" class="button sync">เปิดโหมดออนไลน์</button>
+  </div>
+</form>
+</div></div><!--#body-->
+</div></div><!--#content-->

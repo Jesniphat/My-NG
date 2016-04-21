@@ -1,0 +1,66 @@
+<style>
+.table-list tbody td.name {
+	max-width:240px;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>ใบรับแจ้ง</li><li>ข้อมูลใบรับแจ้ง</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<div class="wrapper" style="height:560px;overflow:auto">
+<table class="table-list">
+<thead>
+<tr>
+	<td colspan="13">
+		<form-input form-id="searchInform" type="text" model="keyword" hint="ค้นหา" pattern=".*" icon="search"></form-input>
+		<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1" class="icon prev">&nbsp;</button>
+{{currentPage+1}} / {{numberOfPages()}}
+		<button ng-disabled="currentPage >= filtered.length/pageSize - 1" ng-click="currentPage=currentPage+1" class="icon next">&nbsp;</button>
+		<form-input form-id="searchInformAll" type="text" model="searchInformAll" hint="" blur="informSearchAll()" pattern=".*" icon="search"></form-input><label for="searchInformAll">ค้นหาใบแจ้งทั้งหมด</label>
+		<div style="float:right">
+			<input type="checkbox" ng-model="is_domestic" ng-true-value="YES" ng-false-value="NO" class="switch small" id="is_domestic" ng-change="refreshData()"><label for="is_domestic">{{is_domestic == 'YES' ?'DOMESTIC':'INTERNATIONAL'}}</label>
+		</div>
+	</td>
+</tr>
+<tr class="header">
+	<th>ที่</th>
+	<th>เลขที่ใบรับแจ้ง</th>
+	<th>เลขอ้างอิง</th>
+	<th>D/I</th>
+	<th>วันที่รับแจ้ง</th>
+	<th>บริษัท</th>
+	<th>เที่ยวบิน</th>
+	<th>เวลา</th>
+	<th>โรงแรม</th>
+	<th>ชื่อกลุ่ม</th>
+	<th>ทะเบียน</th>
+	<th>จำนวน</th>
+	<th>สถานะ</th>
+	<th>คำสั่ง</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="inform in filtered = (informs | filter:keyword) | startFrom:currentPage*pageSize | limitTo:pageSize" class="table-row">
+	<td>{{currentPage*pageSize + 1 + $index}}</td>
+	<td title="{{inform.uuid}}">{{inform.code}}</td>
+	<td class="center">{{inform.ref_code}}</td>
+	<td class="center">{{inform.is_domestic=='YES' ? 'D' : 'I'}}</td>
+	<td class="center">{{inform.issue_date|toDate|date:'ddMMMyy'|uppercase}}</td>
+	<td class="name">{{inform.mem_name}}</td>
+	<td class="center">{{inform.flight}}</td>
+	<td class="center" title="{{inform.flight_date|toDate|date:'ddMMMyy HH:mm'|uppercase}}">{{inform.flight_date.substr(11,5)|uppercase}}</td>
+	<td>{{inform.hotel}}</td>
+	<td class="center">{{inform.group_name}}</td>
+	<td class="center"><span ng-repeat="bus in inform.bus_list">{{bus.license}} </span></td>
+	<td class="right">{{inform.total_pax}}</td>
+	<td class="center">{{inform_status[inform.status]}}</td>
+	<td><a ui-sref="home.inform_edit({code:inform.code})" class="icon small inform-edit"></a></td>
+</tr>
+</tbody>
+</table>
+</div><!--.wrapper-->
+<div class="control"></div>
+</div><!--#body-->
+</div></div><!--#content-->

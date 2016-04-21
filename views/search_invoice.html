@@ -1,0 +1,37 @@
+<style type="text/css">
+	a{
+		cursor: pointer;
+	}
+</style>
+<div class="ngdialog-message" style="white-space: pre;">
+ค้นหารหัสใบแจ้งหนี้
+</div>
+<div class="ngdialog-buttons mt">
+	<table class="table-list">
+		<thead>
+		<tr>
+		    <td colspan="8">
+		        <form-input type="text" model="keyword" hint="ค้นหา" pattern=".*" icon="search"></form-input>
+				<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1" class="icon prev">&nbsp;</button>
+		{{currentPage+1}} / {{numberOfPages()}}
+				<button ng-disabled="currentPage >= filtered.length/pageSize - 1" ng-click="currentPage=currentPage+1" class="icon next">&nbsp;</button>
+		    </td>
+		</tr>
+		<tr>
+			<th>รหัสใบแจ้งหนี้</th>
+			<th>วันที่ ออกใบแจ้ง</th>
+			<th>จำนวนเงินทั้งหมด</th>
+			<th>คำสั่ง</th>
+		</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="invoice in filtered = (invoices | filter:keyword) | startFrom:currentPage*pageSize | limitTo:pageSize">
+				<td>{{invoice.code}}</td>
+				<td>{{invoice.issueDate|toDate|date:'ddMMMyy HH:mm:ss'|uppercase}}</td>
+				<td>{{invoice.totalAmount}}</td>
+				<td><a ng-click="confirm(invoice.code)"  class="icon small" style="background:url(../img/icon/enter.png)  center center no-repeat;"></a></td>
+			</tr>
+		</tbody>
+	</table>
+	<button type="button" class="ngdialog-button" ng-click="cancle()">ยกเลิก</button>
+</div>

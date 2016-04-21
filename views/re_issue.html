@@ -1,0 +1,30 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>การเงิน</li><li><a ui-sref="home.invoice">รายการแจ้งหนี้</a></li><li>เปลี่ยนแปลงวันที่ใบแจ้งหนี้</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="reIssueForm" novalidate>
+	<div class="widget" style="left:0px;top:0px;width:400px;"><form-input class="uppercase" type="text" model="invoice.memCodeFrom" hint="รหัสสมาชิก : ตั้งแต่" pattern=".{5,5}" icon="user" maxlength="5" autofocus></form-input></div>
+	<div class="widget" style="left:0px;top:40px;width:400px;"><form-input class="uppercase" type="text" model="invoice.memCodeTo" hint="รหัสสมาชิก : ถึง" pattern=".{5,5}" icon="user" maxlength="5"></form-input></div>
+	<div class="widget" style="left:0px;top:80px;width:400px;"><form-input class="uppercase" type="text" model="invoice.codeFrom" hint="เลขที่ใบแจ้งหนี้ : ตั้งแต่" pattern="[a-zA-Z]{2,2}\d{8,8}" icon="invoice" maxlength="10"></form-input></div>
+	<div class="widget" style="left:0px;top:120px;width:400px;"><form-input class="uppercase" type="text" model="invoice.codeTo" hint="เลขที่ใบแจ้งหนี้ : ถึง" pattern="[a-zA-Z]{2,2}\d{8,8}" icon="invoice" maxlength="10" ></form-input></div>
+	<div class="widget" style="left:0px;top:160px;width:400px;">
+		<table>
+			<tr>
+				<td>วันที่ แก้ไขออกใบรับแจ้ง</td>
+				<td><input tab-stop required type="date" placeholder="YYYY-MM-DD" ng-model="invoice.issueDate" class="invoicedate" style="width: 170px;" id="issueDate"></td>
+			</tr>
+			<tr>
+				<td>วันที่ แก้ไขกำหนดชำระเงิน</td>
+				<td><input tab-stop required type="date" placeholder="YYYY-MM-DD" ng-model="invoice.dueDate" class="invoicedate" style="width: 170px;" id="dueDate"></td>
+			</tr>
+		</table>
+	</div>
+	<div class="widget" style="left:0px;top:240px;width:400px;height:120px;"><form-textarea style="height:100px;" model="invoice.remark" icon="note" hint="หมายเหตุ"></form-textarea></div>
+	<div class="control">
+		<button tab-stop ng-click="saveReIssue(reIssueForm.$valid)" class="button save" ng-disabled="reIssueForm.$invalid">บันทึก</button><button tab-stop ng-click="reset()" class="button reset" ng-disabled="">ยกเลิก</button><button tab-stop ng-click="goBack()"class="button back">ย้อนกลับ</button>
+	</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->

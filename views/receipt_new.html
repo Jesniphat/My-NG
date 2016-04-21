@@ -1,0 +1,152 @@
+<style>
+.prod-code {
+  width:8em;
+}
+.prod-name {
+  max-width:240px;
+}
+.qty {
+  width:4em;
+  text-align:right;
+}
+.table-list input {
+  border:1px solid #666;
+  border-radius:4px;
+  height:24px;
+  margin:1px;
+  line-height:24px;
+}
+.table-list input[type=text] {
+  padding:0 4px;
+}
+.table-list input[readonly]:focus {
+  outline:1px solid #fb3;
+  outline-offset:0px;
+}
+.cancelled {
+  position:absolute;
+  left:200px;
+  top:200px;
+  width:400px;
+  font-size:36pt;
+  border:3px double rgba(255,0,0,0.7);
+  color:rgba(255,0,0,0.7);
+  text-align:center;
+  -webkit-transform:rotate(15deg);
+  z-index:1000;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>ใบเสร็จ</li><li>ออกใบเสร็จ</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+
+<div class="cancelled" ng-show="receipt.status=='CANCELLED'">CANCELLED ยกเลิกแล้ว</div>
+<form name="informForm">
+
+<div class="widget" style="left:0px;top:0px;width:400px;height:32px;"><form-input form-id="receipt" type="text" ng-keypress="showLovReceipt($event)" ng-class="{lov:true}" icon="code" model="selectedReceipt" readonly tab hint="เลขที่ใบเสร็จ"></form-input></div>
+
+<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><form-input form-id="member" type="text" ng-keypress="showLovMember($event)" ng-class="{lov:true}" icon="member" model="selectedMember" tab readonly hint="สมาชิก" disabled="isLock"></form-input></div>
+
+<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><form-input form-id="invoiceCode" type="text" ng-keypress="showLovInvoice($event)" ng-class="{lov:true}" icon="invoice" model="selectedInvoice" tab readonly hint="ใบแจ้งหนี้" disabled="isLock"></form-input></div>
+
+<div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">วันที่ออกใบเสร็จ</label><input type="date" id ="issueDate" ng-model="receipt.issue_date" ng-disabled="true" tab-stop/></div></div></div>
+
+<div class="widget" style="left:0px;top:128px;width:400px;height:32px;"><form-input form-id="invoice" type="text" icon="invoice" model="receipt.issue_by" tab readonly notab hint="ผู้ทำรายการ"></form-input></div>
+
+<div class="widget" style="left:416px;top:0px;width:400px;height:32px;"><form-input form-id="receiptSearch" type="text" icon="code" blur="loadReceipt2()" model="selectedReceiptSearch" tab hint="ค้นหาเลขที่ใบเสร็จ"></form-input></div>
+
+<div class="widget" style="left:416px;top:32px;width:400px;height:32px;"><form-input form-id="name" type="text" icon="name" model="receipt.name" tab hint="ชื่อออกใบเสร็จ" readonly="memberObj!=null" required></form-input></div>
+
+<div class="widget" style="left:416px;top:64px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/address.png)"><label class="label">ที่อยู่ออกใบเสร็จ</label><div class="content"><select id="corp_addr" ng-model="memberAddress" ng-options="item as item.name for item in memberAddresses" ng-change="changeAddress()" ng-required tab-stop></select></div></div></div></div>
+<!-- +' ['+item.code+']' -->
+<div class="widget" style="left:416px;top:96px;width:400px;height:64px"><form-textarea model="receipt.addr" icon="address" hint="" required readonly="memberObj!=null &amp;&amp; memberObj.type!='CASH'"></form-textarea></div>
+
+<div class="widget" style="left:416px;top:160px;width:400px;height:32px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/receipt_status.png)"><label class="label">สถานะปิดพลัด</label><div class="content"><input type="checkbox" ng-model="receipt.is_post" ng-true-value="YES" ng-false-value="NO" class="switch" id="is_post" ng-disabled="true"><label for="is_post">{{receipt.is_post=='YES'?"ปิดผลัดแล้ว":"ยังไม่ปิดผลัด"}}</label></div></div></div></div>
+
+<div class="widget" style="left:0px;top:192px;width:976px;height:160px;overflow-y:auto;">
+<table class="table-list">
+<thead>
+  <tr>
+    <th style="width:2em">ที่</th>
+    <th style="width:9em">รหัส</th>
+    <th>รายการ</th>
+    <th style="width:5em">จำนวน</th>
+    <th style="width:4em">หน่วย</th>
+    <th style="width:6em">ราคา/หน่วย</th>
+    <th style="width:6em">จำนวนเงิน</th>
+    <th style="width:3em">VAT</th>
+    <th style="width:17em">รายละเอียด</th>
+  </tr>
+</thead>
+<tbody>
+  <tr ng-repeat="item in receiptItems">
+    <td class="right">{{$index+1}}</td>
+    <td class="center"><input type="text" class="prod-code lov" id="code_{{$index}}" ng-model="receiptItems[$index].prod_code" ng-keypress="showLovProduct($event, $index)" ng-keydown="checkDone($event, $index)"  tab-stop readonly change="updateReceipt()" ng-disabled="isLock"></td>
+    <td>{{receiptItems[$index].detail}}</td>
+    <td class="center"><input type="number" class="qty" id="qty_{{$index}}" ng-model="receiptItems[$index].qty" tab-stop readonly min="1" change="updateReceipt()" ng-click="changeQty($index)" ng-focus="changeQty($index)" ng-blur="changeQty($index)" ng-disabled="isLock"></td>
+    <td class="center">{{receiptItems[$index].unit}}</td>
+    <td class="right">{{receiptItems[$index].price|number:2}}
+    <td class="right">{{item.qty * receiptItems[$index].price | number:2}}</td>
+    <td class="center">{{item.vat_type=="EXCLUDE"?'E':'I'}}</td>
+    <td>{{receiptItems[$index].ref_code}}</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<div class="widget" style="left:0px;top:352px;width:400px;"><form-input type="number" money model="receipt.wht_rate" required hint="ภาษีเงินได้นิติบุคคลถูกหัก ณ ที่จ่าย" unit="%" money icon="money" disabled="isVat()"></form-input></div>
+
+<div class="widget" style="left:0px;top:384px;width:400px;"><div class="tab"><span ng-click="switchTab(0)" ng-class="{'active':currentTab==0}">เงินสด {{receipt.cash|number:2}}</span><span ng-click="switchTab(1)" ng-class="{'active':currentTab==1}" ng-show="!enableTeb()">เช็ค {{receipt.cheque|number:2}}</span><span ng-click="switchTab(2)" ng-class="{'active':currentTab==2}" ng-show="!enableTeb()">โอน {{receipt.payin|number:2}}</span></div></div>
+
+<div id="tab0" ng-show="currentTab==0">
+  <div class="widget" style="left:0px;top:416px;width:400px;"><form-input type="number" form-id="cash" money model="receipt.cash" required hint="เงินสด" unit="บาท" money icon="money" change="updateReceipt()" disabled="isLock"></form-input></div>
+  <div class="widget" style="left:0px;top:448px;width:400px;height:64px"><form-textarea form-id="cancel_reason" model="receipt.cancel_reason" icon="code" hint="สาเหตุการยกเลิก"></form-textarea></div>
+</div>
+
+<div id="tab1" ng-show="currentTab==1">
+  <div class="widget" style="left:0px;top:416px;width:400px;"><form-input type="number" money model="receipt.cheque" required hint="ยอดเช็ค" unit="บาท" money icon="money" change="updateReceipt()" disabled="isLock"></form-input></div>
+  <div class="widget" style="left:0px;top:448px;width:400px;"><form-input type="text" form-id="cheque_bank" model="receipt.cheque_bank" required="receipt.cheque > 0" hint="ธนาคาร" ng-class="{lov:true}" icon="code" ng-keypress="showLovBank($event, 'cheque')" readonly tab disabled="isLock"></form-input></div>
+  <div class="widget" style="left:0px;top:480px;width:400px;"><form-input type="text" form-id="cheque_branch" model="receipt.cheque_branch" required="receipt.cheque > 0" hint="สาขา" icon="code" disabled="isLock"></form-input></div>
+  <div class="widget" style="left:0px;top:512px;width:400px;"><form-input type="text" model="receipt.cheque_number" required="receipt.cheque > 0" hint="เลขที่เช็ค" pattern="[0-9]{6,10}" icon="code" disabled="isLock"></form-input></div>
+  <div class="widget" style="left:0px;top:544px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">เช็คลงวันที่</label><input type="date" ng-model="receipt.cheque_date" ng-required="receipt.cheque > 0" tab-stop ng-disabled="isLock"></div></div></div>
+</div>
+
+<div id="tab2" ng-show="currentTab==2">
+  <div class="widget" style="left:0px;top:416px;width:400px;"><form-input type="number" money model="receipt.payin" required hint="ยอดโอน" unit="บาท" money icon="money" change="updateReceipt()" disabled="isLock"></form-input></div>
+  <!--
+  <div class="widget" style="left:0px;top:416px;width:400px;"><form-input type="text" form-id="payin_bank" model="receipt.payin_bank" required="receipt.payin > 0" hint="ธนาคาร" ng-class="{lov:true}" icon="code" ng-keypress="showLovBank($event, 'payin')" tab readonly disabled="isLock"></form-input></div>
+  <div class="widget" style="left:0px;top:448px;width:400px;"><form-input type="text" form-id="payin_branch" model="receipt.payin_branch" required="receipt.payin > 0" hint="สาขา" icon="code" disabled="isLock"></form-input></div>
+  <div class="widget" style="left:0px;top:480px;width:400px;"><form-input type="text" model="receipt.payin_ref" required="receipt.payin > 0" hint="หมายเลขอ้างอิง" icon="code" disabled="isLock"></form-input></div>
+  <div class="widget" style="left:0px;top:512px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">วันที่โอน</label><input type="date" ng-model="receipt.payin_date" ng-required="receipt.payin > 0" tab-stop ng-disabled="isLock"/></div></div></div>
+  -->
+</div>
+
+<div class="widget" style="left:416px;top:352px;width:400px;"><form-input type="number" model="receipt.amount" required hint="รวมจำนวนเงิน" unit="บาท" readonly money icon="money" notab></form-input></div>
+<div class="widget" style="left:416px;top:384px;width:400px;"><form-input type="number" model="receipt.vat_amount" required hint="ภาษีมูลค่าเพิ่ม {{receipt.vat_rate | number:0}}%" unit="บาท" readonly money icon="money"></form-input></div>
+<div class="widget" style="left:416px;top:416px;width:400px;"><form-input type="number" model="receipt.wht_amount" required hint="ภาษีหัก ณ ที่จ่าย {{receipt.wht_rate | number:0}}%" unit="บาท" readonly money icon="money"></form-input></div>
+<div class="widget" style="left:416px;top:448px;width:400px;"><form-input type="number" model="receipt.total_amount" required hint="รวมทั้งสิ้น" unit="บาท" readonly money icon="money" ng-class="{money:true}"></form-input></div>
+<div class="widget" style="left:416px;top:480px;width:400px;"><form-input type="number" model="receipt.total_receive" required hint="จำนวนเงินรับ" unit="บาท" readonly money icon="money"></form-input></div>
+<div class="widget" style="left:416px;top:512px;width:400px;"><form-input type="number" model="receipt.change" required hint="เงินทอน" unit="บาท" readonly money icon="money"></form-input></div>
+
+<div style="float:right;margin-right:295px;">
+  <button tab-stop ng-click="previousClick(selectedReceipt)" class="icon prevblack" ng-disabled="nextAndPreviodsCheck()">&nbsp;</button>
+  <button tab-stop ng-click="nextClick(selectedReceipt)" class="icon nextblack" ng-disabled="nextAndPreviodsCheck()">&nbsp;</button>
+</div>
+<div class="control">
+  <button id="save" tab-stop ng-click="save()" class="button save" ng-disabled="!isValid()">บันทึกรายการ/พิมพ์</button>
+  <!-- <button id="save" tab-stop ng-click="jCheck()" class="button save" ng-disabled="!isValid()">check</button> -->
+  <button id="reset" tab-stop ng-click="reset()" class="button reset">เริ่มใหม่</button>
+  <div style="float:right;">
+    <button id="print" tab-stop ng-click="cancel()" class="button cancel" ng-disabled="!isValid() || receipt.is_post=='YES'">ยกเลิกใบเสร็จ</button>
+    <button id="print" tab-stop ng-click="print()" class="button print" ng-disabled="receipt.uuid=='' || receipt.is_post=='YES'">พิมพ์ใบเสร็จ</button>
+  </div>
+</div>
+
+</form>
+
+</div><!--#body-->
+
+</div></div><!--#content-->

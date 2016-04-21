@@ -1,0 +1,103 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>รายงาน</li><li>ใบลงชื่อ</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<form name="memberReportForm" novalidate>
+<div class="widget" style="left:0px;top:0px;width:816px;"><div class="tab"><span ng-click="switchTab(0)" ng-class="{'active':currentTab==0}">ป้ายผนึกที่อยู่</span><span ng-click="switchTab(1)" ng-class="{'active':currentTab==1}">ข้อมูลบริษัท</span><span ng-click="switchTab(2)" ng-class="{'active':currentTab==2}">ใบลงชื่อ</span><span ng-click="switchTab(3)" ng-class="{'active':currentTab==3}">ทะเบียนสมาชิก</span><span ng-click="switchTab(4)" ng-class="{'active':currentTab==4}">รายละเอียดสมาชิก</span></div></div>
+
+<div ng-show="currentTab==0">
+	<div class="widget" style="left:0px;top:32px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">การเงิน/สมาชิก</label><div class="content"><select ng-model="param0.reportType" ng-required ng-options="item.value as item.label for item in reportType"></select></div></div></div></div>
+
+	<div class="widget" style="left:416px;top:32px;width:296px;height:32px;overflow-y:auto;">
+	<input type="checkbox" ng-model="param0.showProd" class="small" id="showProd"><label for="showProd">แสดงชื่อสินค้าบน Lable</label>
+	</div>
+
+	<div class="widget" style="left:0px;top:64px;width:816px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สินค้า</label><div class="content"><select ng-model="param0.product" ng-required ng-options="item.value as item.value+' '+item.label for item in products" ng-disabled = "isHideProduct()"></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:96px;width:816px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">รหัสสมาชิก</label><div class="content"><input type="text" ng-model="param0.codeFrom" ng-blur="getBranch()"> - <input type="text" ng-model="param0.codeTo" ng-blur="getBranch()"></div></div></div></div>
+	<div class="widget" style="left:0px;top:128px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ภาษาที่อยู่</label><div class="content"><select ng-model="param0.language" ng-required ng-options="item.value as item.label for item in languageList" ng-change="getBranch()" ng-disabled="validLang()"></select></div></div></div></div>
+	<div class="widget" style="left:416px;top:128px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สาขา</label><div class="content"><select ng-model="param0.branch" ng-required ng-options="item.value as item.label for item in branch" ng-disabled = "isHideBranch()"></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:160px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ประเภทสมาชิก</label><div class="content"><select ng-model="param0.memberType" ng-required ng-options="item.value as item.label for item in memberType"></select></div></div></div></div>
+	<div class="widget" style="left:416px;top:160px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สถานะ</label><div class="content"><select ng-model="param0.is_active" ng-required ng-options="item.value as item.label for item in isActiveList"></select></div></div></div></div>
+	<div class="widget" style="left:416px;top:192px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">เรียงตาม</label><div class="content"><select ng-model="param0.order" ng-required ng-options="item.value as item.label for item in order"></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:192px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">จังหวัด</label><div class="content"><select ng-model="param0.province" ng-required ng-options="item.value as item.label for item in provinceList" style="max-width:256px"></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:224px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">Inbound Market</label><div class="content"><select ng-model="param0.Inbound" ng-required ng-options="item.value as item.label for item in marketsList"></select></div></div></div></div>
+
+	<div class="widget" style="left:416px;top:224px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">Outbound Market</label><div class="content"><select ng-model="param0.Outbound" ng-required ng-options="item.value as item.label for item in marketsList"></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:256px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">Specialist</label><div class="content"><select ng-model="param0.special" ng-required ng-options="item.code as item.code for item in specialList" style="max-width:256px"></select></div></div></div></div>
+
+	<div class="widget" style="left:416px;top:256px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">Domestic</label><div class="content"><select ng-model="param0.domestic" ng-required ng-options="item.value as item.label for item in domesticList" style="max-width:256px"></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:288px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ส่งถึง</label><div class="content"><input type="text" ng-model="toPerson"></div></div></div></div>
+</div>
+
+<div ng-show="currentTab==1">
+	<div class="widget" style="left:0px;top:64px;width:816px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">รหัสสมาชิก</label><div class="content"><input type="text" ng-model="param1.codeFrom"> - <input type="text" ng-model="param1.codeTo"></div></div></div></div>
+	<div class="widget" style="left:0px;top:96px;width:816px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ประเภทธุรกิจ</label><div class="content"><select ng-model="param1.businessType" ng-required ng-options="item.value as item.label for item in businessTypeList"></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:128px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ประเภทสมาชิก</label><div class="content"><select ng-model="param1.memberType" ng-required ng-options="item.value as item.label for item in memberType"></select></div></div></div></div>
+	<div class="widget" style="left:416px;top:128px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สถานะ</label><div class="content"><select ng-model="param1.is_active" ng-required ng-options="item.value as item.label for item in isActiveList"></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:160px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">Inbound Market</label><div class="content"><select ng-model="param1.Inbound" ng-required ng-options="item.value as item.label for item in marketsList"></select></div></div></div></div>
+	<div class="widget" style="left:416px;top:160px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">Outbound Market</label><div class="content"><select ng-model="param1.Outbound" ng-required ng-options="item.value as item.label for item in marketsList"></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:192px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">Specialist</label><div class="content"><select ng-model="param1.special" ng-required ng-options="item.code as item.code for item in specialList" style="max-width:256px"></select></div></div></div></div>
+	<div class="widget" style="left:416px;top:192px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">Domestic</label><div class="content"><select ng-model="param1.domestic" ng-required ng-options="item.value as item.label for item in domesticList" style="max-width:256px"></select></div></div></div></div>
+	<div class="widget" style="left:0px;top:224px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">จังหวัด</label><div class="content"><select ng-model="param1.province" ng-required ng-options="item.value as item.label for item in provinceZoneList" style="max-width:256px"></select></div></div></div></div>
+	<div class="widget" style="left:416px;top:224px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">รหัสไปรษณีย์</label><div class="content"><input type="text" ng-model="param1.zipCode"></div></div></div></div>
+	<div class="widget" style="left:0px;top:256px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">เรียงตาม</label><div class="content"><select ng-model="param1.order" ng-required ng-options="item.value as item.label for item in order1" style="max-width:256px"></select></div></div></div></div>
+	<div class="widget" style="left:416px;top:256px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ภาษาของที่อยู่</label><div class="content"><select ng-model="param1.language" ng-required ng-options="item.value as item.label for item in languageList" ng-change="selectProvinceZoneLang()"></select></div></div></div></div>
+
+</div>
+
+<div ng-show="currentTab==2"><!-- meeting sign-->
+	<div class="widget" style="left:0px;top:64px;width:816px;"><form-input type="text" model="param2.title1" hint="ข้อความบรรทัดที่ 1" icon="code"></form-input></div>
+	<div class="widget" style="left:0px;top:96px;width:816px;"><form-input type="text" model="param2.title2" hint="ข้อความบรรทัดที่ 2" icon="code"></form-input></div>
+	<div class="widget" style="left:0px;top:128px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">รหัสสมาชิก</label><div class="content"><input type="text" ng-model="param2.code_from" style="width:5em"> - <input type="text" ng-model="param2.code_to" style="width:5em"></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:160px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ประเภท</label><div class="content">
+		<input type="radio" ng-model="param2.type" value="ORDINARY" id="param2_type_ordinary"><label for="param2_type_ordinary">สามัญ</label>
+		<input type="radio" ng-model="param2.type" value="EXTRA" id="param2_type_extra"><label for="param2_type_extra">สมทบ</label>
+		<input type="radio" ng-model="param2.type" value="VIP" id="param2_type_vip"><label for="param2_type_vip">กิติมศักดิ์</label>
+	</div></div></div></div>
+
+	<div class="widget" style="left:0px;top:192px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สถานะ</label><div class="content"><select ng-model="param2.is_active" ng-required ng-options="item.value as item.label for item in isActiveList"></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:224px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">เรียงลำดับ</label><div class="content"><select ng-model="param2.order_by" ng-required ng-options="item.value as item.label for item in orderByList"></select></div></div></div></div>
+
+</div><!--tab2-->
+<div ng-show="currentTab==3"><!-- member record-->
+	<div class="widget" style="left:0px;top:64px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">รหัสสมาชิก</label><div class="content"><input type="text" ng-model="param3.code_from" style="width:5em"> - <input type="text" ng-model="param3.code_to" style="width:5em"></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:96px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ประเภท</label><div class="content">
+		<input type="checkbox" ng-model="param3.type_ordinary" ng-true-value="YES" ng-false-value="NO" id="param3_type_ordinary"><label for="param3_type_ordinary">สามัญ</label>
+		<input type="checkbox" ng-model="param3.type_extra" ng-true-value="YES" ng-false-value="NO" id="param3_type_extra"><label for="param3_type_extra">สมทบ</label>
+		<input type="checkbox" ng-model="param3.type_vip" ng-true-value="YES" ng-false-value="NO" id="param3_type_vip"><label for="param3_type_vip">กิติมศักดิ์</label>
+	</div></div></div></div>
+
+	<div class="widget" style="left:0px;top:128px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สถานะ</label><div class="content"><select ng-model="param3.is_active" ng-required ng-options="item.value as item.label for item in isActiveList"></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:160px;width:400px;"><form-input type="text" model="param3.doc_no" hint="เลขที่เอกสาร" icon="code"></form-input></div>
+
+	<div class="widget" style="left:0px;top:192px;width:816px;"><form-input type="text" model="param3.sign_by" hint="ชื่อนายกสมาคมฯ" icon="code"></form-input></div>
+</div>
+
+<div ng-show="currentTab==4">
+	<div class="widget" style="left:0px;top:64px;width:816px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">รหัสสมาชิก</label><div class="content"><input type="text" ng-model="param4.codeFrom"> - <input type="text" ng-model="param4.codeTo"></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:96px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ประเภทสมาชิก</label><div class="content"><select ng-model="param4.memberType" ng-required ng-options="item.value as item.label for item in memberType"></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:128px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">สถานะ</label><div class="content"><select ng-model="param4.is_active" ng-required ng-options="item.value as item.label for item in isActiveList"></select></div></div></div></div>
+
+	<div class="widget" style="left:0px;top:160px;width:400px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member_status.png)"><label class="label">ภาษาของที่อยู่</label><div class="content"><select ng-model="param4.language" ng-required ng-options="item.value as item.label for item in languageList" ng-change="selectProvinceZoneLang()"></select></div></div></div></div>
+
+</div>
+<div class="control">
+	<button tab-stop ng-click="doPreview()" class="button preview" ng-disable="!canPreview" ng-style="disablePButton">แสดงรายงาน</button>
+	<button tab-stop ng-click="doExport()" class="button save" ng-disable="!canExport" ng-style="disableEButton">บันทึกเป็น Excel</button>
+</div>
+</form>
+</div><!--#body-->
+</div></div><!--#content-->
+<div id="exportable" style="display: none;">
+</div>

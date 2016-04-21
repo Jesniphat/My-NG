@@ -1,0 +1,155 @@
+<style>
+#table-list input[type=number] {
+  text-align:right;
+}
+#table-list input[readonly] {
+  background-color:#eee;
+}
+#table-list tbody td {
+  text-align: center;
+}
+#table-list input {
+  border:1px solid #666;
+  border-radius:4px;
+  height:24px;
+  margin:1px;
+  line-height:24px;
+  max-width:80px;
+}
+#table-list input#prefix {
+  max-width:100px;
+}
+#table-list input[type=text] {
+  padding:0 4px;
+}
+#table-list input[readonly]:focus {
+  outline:1px solid #fb3;
+  outline-offset:0px;
+}
+[upper] input {
+  text-transform: uppercase;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>สินค้า</li><li>สินค้า</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+
+<form name="productForm">
+
+
+<div class="widget" style="left:0px;top:0px;width:400px;height:32px;"><form-input form-id="code" type="text" ng-keypress="showLovProduct($event)" ng-class="{lov:true}" icon="code" model="selectedProduct" tab hint="รหัสสินค้า" upper blur="checkCode()" required></form-input></div>
+
+<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><form-input form-id="name" type="text" icon="name" model="product.name" tab hint="ชื่อสินค้า" required></form-input></div>
+
+<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><form-input form-id="acc_code" type="text" ng-keypress="showLovAccount($event)" ng-class="{lov:true}" readonly icon="name" model="selectedAccount" tab hint="รหัสบัญชี" required></form-input></div>
+
+<div class="widget" style="left:416px;top:0px;width:400px;height:32px;"><form-input form-id="invoice" type="number" icon="money" model="product.unit_price" money tab hint="ราคา" unit="บาท" required></form-input></div>
+
+<div class="widget" style="left:416px;top:32px;width:400px;height:32px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/money.png)"><label class="label">VAT</label><div class="content"><input type="checkbox" ng-model="product.vat_type" ng-change="updateProductVatType()" ng-true-value="INCLUDE" ng-false-value="EXCLUDE" class="switch" id="vat_type"><label for="vat_type">{{product.vat_type=='INCLUDE'?"รวม VAT แล้ว":"ยังไม่รวม"}}</label></div></div></div></div>
+
+<div class="widget" style="left:416px;top:64px;width:400px;height:32px;"><form-input form-id="unit" type="text" icon="code" model="product.unit" tab hint="หน่วยนับ" required></form-input></div>
+
+<div class="widget" style="left:0px;top:96px;width:816px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">สาขา</label><div class="content">
+  <input type="checkbox" class="small" ng-model="site.ALL" id="site_ALL" ng-change="toggleAll()"><label for="site_ALL">ทุกสาขา</label>
+  <span ng-repeat="item in siteList">
+    <input type="checkbox" class="small" id="site_{{item.code}}" ng-model="site[item.code]"><label for="site_{{item.code}}">{{item.name}}</label>
+  </span>
+</div></div></div></div>
+
+
+<div class="widget" style="left:0px;top:128px;width:400px;height:32px"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/receipt_status.png)"><label class="label">มี Stock</label><div class="content"><input type="checkbox" ng-model="product.is_stock" ng-true-value="YES" ng-false-value="NO" class="switch" id="is_stock"><label for="is_stock">{{product.is_stock=='YES'?"มี Stock":"ไม่มี Stock"}}</label></div></div></div></div>
+
+<!-- <div ng-show="product.is_stock=='1' &amp;&amp; product.code != ''">
+ -->
+<div>
+<div class="widget" style="left:0px;top:160px;width:400px;height:32px;"><form-input type="number" icon="number" model="product.stock_item" tab hint="นำเข้าครั้งละ" unit="ชิ้น" required></form-input></div>
+
+<div class="widget" style="left:416px;top:160px;width:400px;height:32px;"><form-input type="number" icon="number" model="product.sell_item" tab hint="ขายครั้งละ" unit="ชิ้น" required></form-input></div>
+
+<div class="widget" style="left:0px;top:224px;width:848px;height:352px;overflow-y:auto;" ng-show="isValidTable()">
+<div class="wrapper" style="height:352px;overflow:auto">
+<table id="table-list" class="table-list">
+<!-- <thead> -->
+  <tr class="header" style="background-color:#333; color:#fff; height:32px; font-weight: bold;">
+    <th style="width:2em">ที่</th>
+    <th style="width:6em">รหัสขึ้นต้น</th>
+    <th style="width:4em">เล่มที่</th>
+    <th style="width:4em">จำนวนเล่ม</th>
+    <th style="width:4em">เริ่มต้นที่</th>
+    <th style="width:4em">จำนวนเริ่มต้น</th>
+    <th style="width:7em">จำนวนคงเหลือ</th>
+    <th style="width:4em">เล่มคงเหลือ</th>
+    <th style="width:4em">รายการต่อไป</th>
+    <th style="width:4em">คำสั่ง</th>
+  </tr>
+<!-- </thead>
+<tbody> -->
+  <tr>
+    <td>*</td>
+    <td><input type="text" id="prefix" ng-model="stockIn.prefix" tab-stop></td>
+    <td><input type="number" id="book_num" ng-model="stockIn.book_num" tab-stop min="1" ng-change="updateStockIn()"></td>
+    <td><input type="number" id="book_qty" ng-model="stockIn.book_qty" tab-stop min="1" ng-change="updateStockIn()"></td>
+    <td><input type="number" id="start_item" ng-model="stockIn.start_item" tab-stop min="1" ng-blur="updateStockIn()"></td>
+    <td><input type="number" id="start_qty" ng-model="stockIn.start_qty" tab-stop min="1" readonly></td>
+    <td><input type="number" id="avail_qty" ng-model="stockIn.avail_qty" tab-stop min="1" readonly></td>
+    <td><input type="number" id="avail_book_qty" ng-model="stockIn.avail_book_qty" tab-stop min="1" readonly></td>
+    <td><input type="number" id="next_item" ng-model="stockIn.next_item" tab-stop min="1" readonly></td>
+    <td><button ng-click="stockInClick()" ng-disabled="!isListValid()" tab-stop min="1">เพิ่ม</button></td>
+  </tr>
+  <tr ng-repeat="item in stockInList">
+    <td class="right">{{$index+1}}</td>
+    <td>{{item.prefix}}</td>
+    <td>{{item.book_num}}</td>
+    <td>{{item.book_qty}}</td>
+    <td>{{item.start_item}}</td>
+    <td>{{item.start_qty}}</td>
+    <td>{{item.avail_qty}}</td>
+    <td>{{item.book_qty}}</td>
+    <td>{{item.next_item}}</td>
+    <td><button ng-click="deleteStockInList($index)">ลบ</button></td>
+  </tr>
+  <tr class="header" style="background-color:#333; color:#fff; height:32px; font-weight: bold;" ng-show="showByProd()">
+    <td>ที่</td>
+    <td>รหัสขึ้นต้น</td>
+    <td>เล่มที่</td>
+    <td>จำนวนเล่ม</td>
+    <td>เริ่มต้นที่</td>
+    <td>จำนวนเริ่มต้น</td>
+    <td>จำนวนคงเหลือ</td>
+    <td>เล่มคงเหลือ</td>
+    <td>รายการต่อไป</td>
+    <td>-</td>
+  </tr>
+  <tr ng-repeat="itemList in stockinLists" ng-show="showByProd()">
+    <td class="right">{{$index+1}}</td>
+    <td>{{itemList.prefix}}</td>
+    <td>{{itemList.book_num}}</td>
+    <td>{{itemList.book_qty}}</td>
+    <td>{{itemList.start_item}}</td>
+    <td>{{itemList.start_qty}}</td>
+    <td>{{itemList.avail_qty}}</td>
+    <td>{{itemList.avail_book}}</td>
+    <td>{{itemList.next_item}}</td>
+    <td>-</td>
+  </tr>
+<!-- </tbody> -->
+</table>
+</div>
+</div>
+
+</div><!-- is_stock-->
+
+<div class="control">
+  <button id="save" tab-stop ng-click="save()" class="button save" ng-disabled="!isValid()">บันทึก</button>
+  <button id="reset" tab-stop ng-click="reset()" class="button reset">เริ่มใหม่</button>
+  <!-- <button class="button reset" ng-disabled="showByProd()">XXX</button> -->
+</div>
+
+</form>
+
+</div><!--#body  -->
+
+</div></div><!--#content-->

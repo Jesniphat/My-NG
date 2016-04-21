@@ -1,0 +1,88 @@
+label, .label {
+	display: inline-block;
+	height: 24px;
+	line-height: 24px;
+	padding: 8px;
+}
+input[type=text], input[type=password], input[type=number], textarea {
+	height: 24px;
+	border: 8px solid;
+	padding:0;
+	-webkit-border-image: url(img/input-border.png) 8 repeat;
+	-moz-border-image: url(img/input-border.png) 8 repeat;
+	border-image: url(img/input-border.png) 8 repeat;
+}
+textarea {
+	min-height: 96px;
+}
+input[type=text]:invalid, input[type=password]:invalid, input[type=number]:invalid, textarea:invalid {
+	-webkit-border-image: url(img/input-border-invalid.png) 8 repeat;
+	-moz-border-image: url(img/input-border-invalid.png) 8 repeat;
+	border-image: url(img/input-border-invalid.png) 8 repeat;
+	outline: none;
+}
+input[type=text]:focus, input[type=password]:focus, input[type=number]:focus, textarea:focus {
+	-webkit-border-image: url(img/input-border-focus.png) 8 repeat;
+	-moz-border-image: url(img/input-border-focus.png) 8 repeat;
+	border-image: url(img/input-border-focus.png) 8 repeat;
+	outline: none;
+}
+select, input[type=date] {
+	height: 24px;
+	border: none;
+	padding: 8px 8px 6px 8px;
+	border-bottom: 2px solid #aaa;
+	background: #fff url(img/spinner-corner.png) right bottom no-repeat;
+}
+select {
+	height: 40px;
+}
+
+input[type=radio], input[type=checkbox] {
+	display: none;
+}
+input[type=radio] + label{
+	padding-left: 32px;
+	background: url(img/radio.png) 4px center no-repeat;
+}
+input[type=radio]:checked + label{
+	background: url(img/radio-checked.png) 4px center no-repeat;
+}
+input[type=radio]:disabled + label{
+	opacity: 0.3;
+}
+input[type=checkbox] + label {
+	padding-left: 32px;
+	background: url(img/checkbox.png) 4px center no-repeat;
+}
+input[type=checkbox]:checked + label {
+	background: url(img/checkbox-checked.png) 4px center no-repeat;
+}
+input[type=checkbox]:disabled + label {
+	background: url(img/checkbox-disabled.png) 4px center no-repeat;
+	color: rgba(0, 0, 0, 0.3);
+}
+input[type=checkbox]:disabled:checked + label {
+	background: url(img/checkbox-checked-disabled.png) 4px center no-repeat;
+	color: rgba(0, 0, 0, 0.3);
+}
+
+input.number {
+	width: 5em;
+	text-align: right;
+}
+.table {
+	display: table;
+    border-spacing: 4px;
+    border-collapse: separate;
+}
+.table > * {
+	display: table-row;
+}
+.table > * > * {
+	display: table-cell;
+}
+input[required]::after {
+	content:'*';
+	color:red;
+}

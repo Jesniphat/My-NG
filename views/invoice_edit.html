@@ -1,0 +1,125 @@
+<style>
+.prod-code {
+  width:8em;
+}
+.prod-name {
+  max-width:240px;
+}
+.qty {
+  width:4em;
+  text-align:right;
+}
+.table-list input {
+  border:1px solid #666;
+  border-radius:4px;
+  height:24px;
+  margin:1px;
+  line-height:24px;
+}
+.table-list input[type=text] {
+  padding:0 4px;
+}
+.table-list input[readonly]:focus {
+  outline:1px solid #fb3;
+  outline-offset:0px;
+}
+.cancelled {
+  position:absolute;
+  left:200px;
+  top:200px;
+  width:400px;
+  font-size:36pt;
+  border:3px double rgba(255,0,0,0.7);
+  color:rgba(255,0,0,0.7);
+  text-align:center;
+  -webkit-transform:rotate(15deg);
+  z-index:1000;
+}
+</style>
+<div id="content"><div>
+<div id="nav">
+<ul><li>ใบแจ้งหนี้</li><li>ออกใบแจ้งหนี้</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+
+<form name="informForm">
+
+<div class="widget" style="left:0px;top:0px;width:400px;height:32px;"><form-input id="invoicecode" type="text" name="" icon="code" model="invoice.code"  tab-stop ng-class="{lov:true}"  ng-keypress="showLovInvoice($event)" hint="เลขที่ใบแจ้งหนี้" ></form-input></div>
+
+<div class="widget" style="left:0px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/member.png)"><label class="label">เลขที่สมาชิก</label><input type="text" ng-model="selectedMember.code" name="member" id="member" style="width:100px;" tab-stop  ng-keypress="showLovMember($event)" ng-blur="selectMemberOnec()" ng-disabled="isLockInvoice"> - <input type="text" ng-model="selectedMember.codeTo" name="memberTo" id="memberTo" style="width:100px;" tab-stop ng-keypress="showLovMember2($event)" ng-blur="checkIt()" ng-disabled="isLockInvoice"></div></div></div>
+
+<div class="widget" style="left:0px;top:64px;width:400px;height:32px;"><form-input form-id="name" type="text" icon="name" model="selectedMember.name_th" tab readonly  ng-class="{lov:true}" hint="ชื่อ"></form-input></div>
+<div class="widget" style="left:0px;top:96px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">กำหนดชำระ</label><input id="deadline_date"  type="date" ng-model="invoice.deadline_date" ng-disabled="isLockInvoice" tab-stop /></div></div></div>
+<div class="widget" style="left:0px;top:128px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/code.png)"><label class="label">เลขที่ใบเสร็จ</label><input type="text" ng-model="selectedReceipt.code" name="receipt" id="receipt" style="width:155px;" tab-stop  ng-keypress="showLovReceipt($event)" ng-blur="checkRealReceiptFn()" ng-disabled="isLockInvoice||offAddress()"></div></div></div>
+<div class="widget" style="left:0px;top:160px;width:400px;height:32px;" ng-show="isRealReceipt">
+<label style="color: red; padding-left:80px; padding-top:8px;">* ไม่พบเลขที่ใบเสร็จในระบบ</label>
+</div>
+<div class="widget" style="left:0px;top:160px;width:400px;height:32px;">
+<form-input type="text" name="" icon="receipt_status" model="invoice.status" tab readonly hint="สถานะ" ></form-input>
+</div>
+
+
+<div class="widget" style="left:416px;top:0px;width:400px;height:32px;"><form-input id="invoicecodesaerch" type="text" name="" icon="code" model="invoice.codeSearch" blur="loadSearchInvoice()" tab-stop hint="ค้นหาเลขที่ใบแจ้งหนี้" ></form-input></div>
+<div class="widget" style="left:416px;top:32px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/datetime.png)"><label class="label">วันที่ Issue</label><input id="issue" type="date" name="" icon="datetime" ng-model="invoice.issue" ng-disabled="isLockInvoice" tab-stop /></div></div></div>
+<div class="widget" style="left:416px;top:64px;width:400px;height:32px;"><form-input type="text" name="" icon="datetime" model="invoice.reissue_date" tab readonly hint="วันที่ Reissue" ></form-input></div>
+<div class="widget" style="left:416px;top:96px;width:400px;height:32px;"><div class="input-wrap"><div class="input-custom" style="background-image:url(img/icon/address.png)"><label class="label">ที่อยู่ออกใบแจ้งหนี้</label><div class="content"><select id="corp_addr" ng-model="memberAddress" ng-options="item as item.name for item in memberAddresses" ng-change="changeAddress()" ng-required ng-disabled="isLockInvoice||offAddress()" tab-stop></select></div></div></div></div>
+<div class="widget" style="left:416px;top:128px;width:400px;height:64px"><form-textarea model="address" icon="address" hint="" disabled="isLockInvoice||offAddress()"></form-textarea></div>
+
+
+<div class="widget" style="left:0px;top:192px;width:816px;height:160px;overflow-y:auto;">
+<table class="table-list" ng-disabled="isLockInvoice">
+<thead>
+  <tr>
+    <th style="width:2em">ที่</th>
+    <th style="width:9em">รหัส</th>
+    <th>รายการ</th>
+    <th style="width:5em">จำนวน</th>
+    <th style="width:4em">หน่วย</th>
+    <th style="width:6em">ราคา/หน่วย</th>
+    <th style="width:6em">จำนวนเงิน</th>
+    <th style="width:3em">VAT</th>
+  </tr>
+</thead>
+<tbody>
+  <tr ng-repeat="item in invoiceItems">
+    <td class="right">{{$index+1}}</td>
+    <td class="center"><input type="text" class="prod-code lov" id="code_{{$index}}" ng-model="invoiceItems[$index].prod_code" ng-keypress="showLovProduct($event, $index)" ng-keydown="checkDone($event, $index)"  tab-stop readonly ng-disabled="isLockInvoice"></td>
+    <td>{{invoiceItems[$index].detail}}</td>
+    <td class="center"><input type="number" class="qty" id="qty_{{$index}}" ng-model="invoiceItems[$index].qty" tab-stop readonly min="1" ng-change="updateInvoice()" ng-disabled="isLock"></td>
+    <td class="center">{{invoiceItems[$index].unit}}</td>
+    <td class="right">{{invoiceItems[$index].price|number:2}}
+    <td class="right">{{item.qty * invoiceItems[$index].price | number:2}}</td>
+    <td class="center">{{item.vat_type=="EXCLUDE"?'E':'I'}}</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<div class="widget" style="left:0px;top:352px;width:400px;height:96px;"><form-textarea id="remark" model="invoice.remark" icon="code" hint="" disabled="isLockInvoice"></form-textarea></div>
+
+<div class="widget" style="left:416px;top:352px;width:400px;"><form-input type="number" model="invoice.amount" required hint="รวมจำนวนเงิน" unit="บาท" readonly money icon="money" notab></form-input></div>
+<div class="widget" style="left:416px;top:384px;width:400px;"><form-input type="number" model="invoice.vat_amount" required hint="ภาษีมูลค่าเพิ่ม {{invoice.vat_rate | number:0}}%" unit="บาท" readonly money icon="money"></form-input></div>
+<div class="widget" style="left:416px;top:412px;width:400px;"><form-input type="number" model="invoice.total_amount" required hint="รวมทั้งสิ้น" unit="บาท" readonly money icon="money" ng-class="{money:true}"></form-input></div>
+
+
+  <div style="float:right;margin-right:295px;">
+    <button tab-stop ng-click="previousClick(invoice.code)" class="icon prevblack" ng-disabled="nextAndPreviodsCheck()">&nbsp;</button>
+    <button tab-stop ng-click="nextClick(invoice.code)" class="icon nextblack" ng-disabled="nextAndPreviodsCheck()">&nbsp;</button>
+  </div>
+
+<div class="control">
+  <button id="save" tab-stop ng-click="ConfrimSave()" class="button save" ng-disabled="!isValid()||isLockInvoice">บันทึก</button>
+  <button id="reset" tab-stop ng-click="reset()" class="button reset">เริ่มใหม่</button>
+  <!-- <button id="save" tab-stop ng-click="jCheck()" class="check" ng-disabled="!isValid()">check</button> -->
+  <div style="float:right">
+	  <button id="buy" tab-stop ng-click="buyInform()" class="button" ng-disabled="!isValid() || invoice.code==''">ชำระเงิน</button>
+    <button id="cancel" tab-stop ng-click="ConfirmCancel()" class="button cancel" ng-disabled="!isValid() && invoice.code==''">ยกเลิกใบแจ้งหนี้</button>
+    <button id="print" tab-stop ng-click="printNow()" class="button print" ng-disabled="!isValidPrint() || invoice.status=='CANCELLED'">พิมพ์ใบแจ้งหนี้</button>
+  </div>
+</div>
+</form>
+
+</div><!--#body-->
+
+</div></div><!--#content-->

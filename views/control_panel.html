@@ -1,0 +1,68 @@
+<div id="content"><div>
+<div id="nav">
+<ul><li>ผู้ดูแล</li><li>ศูนย์ควบคุม</li></ul>
+<div id="page-title"><span class="date" my-current-time="dateFormat"></span></div>
+</div>
+<div id="body" class="canvas">
+<div class="widget" style="top:0px;left:0px;height:40px;"><div class="tab"><span ng-click="switchTab(0)" ng-class="{'active':currentTab==0}">ต้้งค่า</span><span ng-click="switchTab(1)" ng-class="{'active':currentTab==1}">ฐานข้อมูล</span><span ng-click="switchTab(2)" ng-class="{'active':currentTab==2}">Report</span><span ng-click="switchTab(3)" ng-class="{'active':currentTab==3}">AUDIO</span></div></div>
+<div ng-show="currentTab==0">
+
+<div class="widget" style="top:40px;left:0px;">
+<label>AUTO SYNC</label><input type="checkbox" ng-model="setting.sync" class="switch" id="syncToggle" ng-change="doSaveSync()"/>
+<label for="syncToggle">{{setting.sync?'SYNC=ON':'SYNC=OFF'}}</label>
+</div>
+
+</div><!--tab-->
+
+<div ng-show="currentTab==1">
+<div class="widget" style="top:40px;left:0px;">
+<select
+	ng-options="objectStore.key as objectStore.name for objectStore in objectStoreList"
+	ng-model="objectStore"
+	ng-change="change()">
+</select>
+<button ng-click="doSync()">Force Sync</button>
+<button ng-click="doClear()">Clear</button>
+<table class="table-list">
+<thead>
+<tr><th colspan="{{columnList.length}}" style="text-align:left">
+	Search for <input type="text" ng-model="keyword"/>
+	Limit to <input type="number" ng-model="pageSize" style="width:40px" min="10" max="50"/>
+</th>
+<tr>
+	<th ng-repeat="column in columnList">{{column}}</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="dataRow in filtered = (data | filter:keyword) | startFrom:currentPage*pageSize | limitTo:pageSize" ng-click="showData(dataRow)">
+	<td ng-repeat="column in columnList">{{dataRow[column]}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div><!--tab-->
+
+<div ng-show="currentTab==2">
+<div class="widget" style="top:40px;left:0px;width:800px;height:40px;"><select id="printer" ng-model="printer" ng-options="item as item.name+'('+item.datatype+')' for item in printers" ng-change="changeInform()"></select></div>
+<div class="widget" style="top:80px;left:0px;width:800px;height:40px;">
+<button ng-click="doPrint()">Print</button>
+<button ng-click="doPrintEsc()">Print Text</button>
+</div>
+<div class="widget" style="top:120px;left:0px;width:800px;height:400px;">
+<webview id="web" src="about:blank" style="width:640px; height:480px"></webview>
+</div>
+</div><!--tab-->
+
+<div ng-show="currentTab==3">
+
+<div class="widget" style="top:40px;left:0px;width:800px;height:40px;"><button ng-click="togglePlay()">{{callBus?'Stop':'Play'}}</button>
+	<input type="text" ng-model="number">
+  <button ng-click="addNumber()">Add</button>
+  <button ng-click="query()">Query</button>
+	<div ns-counter="myTime">Hello</div>
+</div>
+</div><!--tab-->
+
+</div><!--#body-->
+</div></div><!--#content-->
